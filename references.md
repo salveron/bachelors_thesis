@@ -7,7 +7,7 @@ https://ebookcentral.proquest.com/lib/techlib-ebooks/detail.action?docID=3339190
 
 - Wang, D. L. and Brown, G. J. (Eds.) (2006). Computational auditory scene analysis: Principles,
 algorithms and applications.
-**Can't find this online on NTK's website - need to ask personally**
+**NTK does not have it... need to search elsewhere?**
 
 - Computational Models of Auditory Scene Analysis: A Review
 Beáta T. Szabó, Susan L. Denham and István Winkler
