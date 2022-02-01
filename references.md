@@ -15,7 +15,8 @@ https://www.frontiersin.org/articles/10.3389/fnins.2016.00524/full
 
 - Wikipedia - multiple articles - sound recognition, sound processing, Fourier transform,
 biological structure of the human ear (multiple articles),
-ASA, CASA, signal separation, filters and filter banks, spectrogram, etc.
+ASA, CASA, signal separation, filters and filter banks, spectrogram, Nyquist frequency,
+piano key frequencies etc.
 
 ------------------------------------------------------------------------------------------
 
