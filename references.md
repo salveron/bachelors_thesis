@@ -31,9 +31,9 @@ https://doi.org/10.3389/fnins.2015.00309
 *Venkata srinivas kiran kumar Jasti*
 https://www.researchgate.net/publication/348249455_Computational_Auditory_Scene_AnalysisCASA_Technique_Inspired_by_Human_Auditory_SystemHAS_-A_Review
 
-- Computational Auditory Scene Analysis and Automatic Speech Recognition
-*Arun Narayanan, DeLiang Wang*
-The Ohio State University, USA
+- **(!!!)** Computational Auditory Scene Analysis and Automatic Speech Recognition
+*Arun Narayanan, DeLiang Wang* The Ohio State University, USA
+http://web.cse.ohio-state.edu/~wang.77/papers/Narayanan-Wang13.pdf
 
 ---
 
