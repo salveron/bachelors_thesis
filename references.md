@@ -43,6 +43,14 @@ http://web.cse.ohio-state.edu/~wang.77/papers/Narayanan-Wang13.pdf
 *Meddis R., Hewitt M. J. (1991)*
 https://asa.scitation.org/doi/pdf/10.1121/1.400725
 
+- A comparison of several computational auditory scene analysis (CASA) techniques for monaural speech segregation
+*Jihen Zeremdini, Mohamed Anouar Ben Messaoud and Aicha Bouzid*
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4883138/
+
+- Monaural speech segregation based on pitch tracking and amplitude modulation
+*Guoning Hu and DeLiang Wang*
+https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1333078
+
 ---
 
 #### Python

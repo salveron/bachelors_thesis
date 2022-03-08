@@ -1,6 +1,6 @@
 ### Bachelor's work topic update
 
-# Using Computational Auditory Scene Analysis algorithms for Separating Monophonic Sounds from Noise
+# Using Computational Auditory Scene Analysis algorithms for Separating Monophonic Music from Noise
 
 1. Study and describe the basics of sound recognition and auditory scene analysis in humans
 (keywords: biological structure of the human ear, source separation, cocktail party problem,
