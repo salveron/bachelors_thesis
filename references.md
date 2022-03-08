@@ -35,10 +35,19 @@ https://www.researchgate.net/publication/348249455_Computational_Auditory_Scene_
 *Arun Narayanan, DeLiang Wang* The Ohio State University, USA
 http://web.cse.ohio-state.edu/~wang.77/papers/Narayanan-Wang13.pdf
 
+- Computational Auditory Scene Analysis
+*David F. Rosenthal, Hiroshi G. Okuno (1998)*
+**Paper book**
+
+- Virtual pitch and phase sensitivity of a computer model of the auditory periphery. I: Pitch identification
+*Meddis R., Hewitt M. J. (1991)*
+https://asa.scitation.org/doi/pdf/10.1121/1.400725
+
 ---
 
 #### Python
 
-- Numpy, scipy, matplotlib
-- Gammatone https://github.com/detly/gammatone
-- Brian2Hears https://brian2hears.readthedocs.io/en/stable/index.html
+- Numpy, scipy, matplotlib, skimage, statsmodels
+- Gammatone https://github.com/detly/gammatone *(probably won't use it)*
+- Brian2Hears https://brian2hears.readthedocs.io/en/stable/index.html *(if I have some time left,
+I want to try to exclude it from this list)*
