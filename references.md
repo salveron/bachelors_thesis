@@ -1,6 +1,6 @@
 # List of literature I've used by now (will be adding more)
 
-- Auditory Neuroscience : Making Sense of Sound
+- Auditory Neuroscience: Making Sense of Sound
 *Jan Schnupp, Israel Nelken, and Andrew J. King*
 https://ebookcentral.proquest.com/lib/techlib-ebooks/detail.action?docID=3339190&pq-origsite=summon
 **Completed chapters 1, 2, 3, 6**
@@ -50,6 +50,10 @@ https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4883138/
 - Monaural speech segregation based on pitch tracking and amplitude modulation
 *Guoning Hu and DeLiang Wang*
 https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1333078
+
+- A method of signal extraction from noisy signal based on auditory scene analysis
+*Masashi Unoki, Masato Akagi*
+https://www.sciencedirect.com/science/article/pii/S0167639398000776
 
 ---
 
