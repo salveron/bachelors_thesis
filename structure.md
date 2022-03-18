@@ -4,6 +4,8 @@
 
 ### Legend:
 
+- **(+)** = "The text is written"
+- **(++)** = "The text is written and formatted"
 - **(?)** = "Do I need it?"
 - **(??)** = "Need to specify" + "Do I need it?"
 
@@ -16,7 +18,7 @@ I will mark each section after I write it and then will move this list to the "T
 3. Abstract, keywords
 4. Table of Contents, (List of Figures, List of Tables...)
 
-5. Introduction
+5. Introduction **(+)**
    1. Motivation (technical, maybe also personal)
    2. Objectives
    3. Structure of the Thesis
@@ -26,7 +28,7 @@ I will mark each section after I write it and then will move this list to the "T
       1. What a Sound is
       2. Periodicity and Pitch
    2. Biological Background
-      1. Outer and Middle Ear
+      1. Outer and Middle Ear **(+)**
       2. Inner Ear: Cochlea, Basilar Membrane, Hair Cells
       3. ASA, cocktail party problem
    3. Mathematical Background **(?)**

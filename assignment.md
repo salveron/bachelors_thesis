@@ -1,4 +1,4 @@
-### Bachelor's work topic update
+### Bachelor's Work Assignment Update
 
 # Using Computational Auditory Scene Analysis algorithms for Separating Monophonic Music from Noise
 
