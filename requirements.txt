@@ -1,0 +1,4 @@
+brian2hears
+numpy
+scikit-image
+statsmodels
