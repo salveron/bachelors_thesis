@@ -1,6 +1,7 @@
 .idea/
 venv/
 *__pycache__/
+*_build/
 _minted-ctufit-thesis/
 
 *.aux
@@ -16,7 +17,6 @@ _minted-ctufit-thesis/
 *.lol
 *.lot
 *.out
-*.pdf
 *.ps
 *.run.xml
 *.toc
