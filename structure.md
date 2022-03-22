@@ -29,9 +29,9 @@ I will mark each section after I write it and then will move this list to the "T
       2. Periodicity and Pitch
    2. Biological Background
       1. Outer and Middle Ear **(+)**
-      2. Inner Ear: Cochlea, Basilar Membrane, Hair Cells
+      2. Inner Ear: Cochlea, Basilar Membrane, Hair Cells **(+)**
       3. ASA, cocktail party problem
-   3. Mathematical Background **(?)**
+   3. Mathematical Background
       1. What a Digital Signal is, Examples of the Most Commonly Used Sounds
       2. Digital Filters and Filter Banks
       3. Overview of the Math Used in the Implementation Part
