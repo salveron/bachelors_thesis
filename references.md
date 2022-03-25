@@ -55,6 +55,10 @@ https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1333078
 *Masashi Unoki, Masato Akagi*
 https://www.sciencedirect.com/science/article/pii/S0167639398000776
 
+- What Is Sound?
+*Pasnau, Robert*
+https://onlinelibrary-wiley-com.ezproxy.techlib.cz/doi/pdf/10.1111/1467-9213.00144
+
 ---
 
 #### Python
