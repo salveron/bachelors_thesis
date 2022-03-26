@@ -59,6 +59,10 @@ https://www.sciencedirect.com/science/article/pii/S0167639398000776
 *Pasnau, Robert*
 https://onlinelibrary-wiley-com.ezproxy.techlib.cz/doi/pdf/10.1111/1467-9213.00144
 
+- Pitch: Neural Coding and Perception
+*Christopher J. Plack, Andrew J. Oxenham, Richard R. Fay, Arthur N. Popper*
+https://ebookcentral.proquest.com/lib/techlib-ebooks/reader.action?docID=264885
+
 ---
 
 #### Python
