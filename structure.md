@@ -24,7 +24,7 @@ I will mark each section after I write it and then will move this list to the "T
    3. Structure of the Thesis
 
 6. Theoretical Part
-   1. Physical Background
+   1. Physical Background **(+)**
       1. What a Sound is
       2. Periodicity and Pitch
    2. Biological Background
