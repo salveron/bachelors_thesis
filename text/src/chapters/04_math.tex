@@ -115,14 +115,14 @@ This section will provide more specific information about the mathematical conce
 	\end{equation}
 	where $a(n, c)$ represents the simulated auditory nerve response for frequency channel $c$ and discrete time $n$, $\tau$ is the time lag, $K$ is the length of the sampling window, and $h(k)$ is the window function (usually Hanning, exponential or rectangular).
 	
-	\item[Summary autocorrelation] Summary autocorrelation function, or SACF, is defined as \cite{Wang2006}\cite{Virtanen2012}:
+	\item[Summary autocorrelation] Summary autocorrelation function, or SACF, is defined as \cite{Wang2006}\cite{Wang2012}:
 	\begin{equation}
 		SACF(n, \tau) = \sum_c{ACF(n, c, \tau)}
 	\end{equation}
 	
-	\item[Cross-channel correlation] Cross-channel correlation is a correlation between signals from different frequency channels. In this thesis it is defined only for each two neighboring channels ($c$ and $c + 1$) using autocorrelation function \cite{Virtanen2012}: 
+	\item[Cross-channel correlation] Cross-channel correlation is a correlation between signals from different frequency channels. In this thesis it is defined only for each two neighboring channels ($c$ and $c + 1$) using autocorrelation function \cite{Wang2012}: 
 	\begin{equation}
-		CCF(n, c) = \frac{
+		CCCF(n, c) = \frac{
 			\sum\limits_{\tau}{
 				\left[ACF(n, c, \tau) - \overline{ACF(n, c)}\right]
 				\left[ACF(n, c + 1, \tau) - \overline{ACF(n, c + 1)}\right]}
