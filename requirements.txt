@@ -1,4 +1,6 @@
-brian2hears
 numpy
+matplotlib
+scipy
+brian2hears
 scikit-image
 statsmodels

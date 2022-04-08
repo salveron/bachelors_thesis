@@ -48,6 +48,6 @@ def resynthesize_sound(cochleagram, samplerate):
 
     """
     # TODO: Invert cochleagram?
-    resynth = Sound(cochleagram.mean(axis=0), samplerate)
+    resynth = Sound(cochleagram.sum(axis=0), samplerate)
 
     return resynth

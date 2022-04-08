@@ -22,7 +22,7 @@ def load_sound(file_name, full_path=False, monaural=True):
 
     """
     if not full_path:
-        file_name = os.path.join("..", "data", "monophony", file_name)
+        file_name = os.path.join("..", "data", "wav", file_name)
 
     if not file_name.endswith(".wav"):
         raise ValueError("Only .wav files are supported.")

@@ -3,15 +3,12 @@
 #######################################################
 """Contains constants and utility functions."""
 
+from brian2 import *  # Imports everything from numpy and matplotlib too
+from brian2hears import *
 import skimage
-
-from brian2 import Hz, kHz, msecond
 
 MIN_PIANO_KEY_FREQ = 27.5 * Hz
 MAX_PIANO_KEY_FREQ = 4.186 * kHz
-
-LO_FREQ_CHANNEL_BANDWIDTH = 50 * Hz
-HI_FREQ_CHANNEL_BANDWIDTH = 1 * kHz
 
 WINDOW_SIZE_MS = 20 * msecond
 WINDOW_OVERLAP_MS = 10 * msecond
@@ -57,3 +54,55 @@ def apply_windowing(cochleagram, samplerate, w_size_ms=WINDOW_SIZE_MS, w_overlap
     window_shape = (cochleagram.shape[0], w_size)
 
     return skimage.util.view_as_windows(cochleagram, window_shape, w_overlap).squeeze()
+
+
+def _decrease_time_resolution(cochleagram, samplerate):
+    """Decrease resolution of time-axis to avoid aliasing when plotting cochleagrams.
+
+    Only for private use. Uses root-mean-square function and windowing.
+
+    :param np.ndarray cochleagram: Input cochleagram
+    :param int samplerate: Samplerate of the input sound
+    :returns: Cochleagram for plotting
+    :rtype: tuple
+
+    """
+    windows = apply_windowing(cochleagram, samplerate)
+
+    # Root-mean-square function along time-axis
+    rms = np.apply_along_axis(lambda vec: np.sqrt(np.mean(np.square(vec))), 2, windows).T
+
+    return rms
+
+
+def plot_process_results(cochleagram, ibm, masked_cochleagram, samplerate, figsize=(18, 5)):
+    """Plot the results of the all-at-once function.
+
+    :param np.ndarray cochleagram: Input cochleagram
+    :param np.ndarray ibm: Estimated ideal binary mask
+    :param np.ndarray masked_cochleagram: Masked cochleagram
+    :param int samplerate: Samplerate of the input sound
+    :param tuple figsize: Size of the matplotlib figure
+
+    """
+    fig, (ax1, ax2, ax3) = subplots(ncols=3, figsize=figsize, sharey="row")
+
+    rms = _decrease_time_resolution(cochleagram, samplerate)
+    ax1.imshow(rms, origin='lower', aspect='auto', interpolation="none", vmin=0,
+               extent=[0, cochleagram.shape[1] / samplerate, 0, cochleagram.shape[0]])
+    ax1.set_title("Cochleagram")
+    ax1.set_xlabel("Time (s)")
+    ax1.set_ylabel("Frequency channels")
+
+    ax2.imshow(ibm.T, origin='lower', aspect='auto', vmin=0, interpolation="none", cmap="Greys")
+    ax2.set_title("IBM estimate")
+    ax2.set_xlabel("Time frames")
+    ax2.set_ylabel("Frequency channels")
+
+    rms = _decrease_time_resolution(masked_cochleagram, samplerate)
+    ax3.imshow(rms, origin='lower', aspect='auto', vmin=0, interpolation="none", cmap="Greys")
+    ax3.set_title("IBM estimate")
+    ax3.set_xlabel("Time (s)")
+    ax3.set_ylabel("Frequency channels")
+
+    show()
