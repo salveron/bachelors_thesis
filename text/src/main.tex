@@ -20,12 +20,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ABSTRACT AND KEYWORDS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\ctufitabstractCZE{Fill in abstract of this thesis in Czech language. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Cras pede libero, dapibus nec, pretium sit amet, tempor quis. Sed vel lectus. Donec odio tempus molestie, porttitor ut, iaculis quis, sem. Suspendisse sagittis ultrices augue.} % TODO % abstract in Czech
-
 \ctufitabstractENG{Fill in abstract of this thesis in English language. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Cras pede libero, dapibus nec, pretium sit amet, tempor quis. Sed vel lectus. Donec odio tempus molestie, porttitor ut, iaculis quis, sem. Suspendisse sagittis ultrices augue.} % TODO % abstract in English
 
-\ctufitkeywordsCZE{enter, commma, separated, list, of, keywords, in, CZECH} % TODO % keywords in Czech
+\ctufitabstractCZE{Fill in abstract of this thesis in Czech language. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Cras pede libero, dapibus nec, pretium sit amet, tempor quis. Sed vel lectus. Donec odio tempus molestie, porttitor ut, iaculis quis, sem. Suspendisse sagittis ultrices augue.} % TODO % abstract in Czech
+
 \ctufitkeywordsENG{enter, commma, separated, list, of, keywords, in, ENGLISH} % TODO % keywords in English
+\ctufitkeywordsCZE{enter, commma, separated, list, of, keywords, in, CZECH} % TODO % keywords in Czech
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CUSTOMIZATION OF THE TEMPLATE
@@ -150,15 +150,20 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\chapter{Acronyms} % TODO - move to the end?
 	\begin{tabular}{rl}
-		DFA & Deterministic Finite Automaton\\
-		FA & Finite Automaton\\
-		LPS & Labelled Prüfer Sequence\\
-		NFA & Nondeterministic Finite Automaton\\
-		NPS & Numbered Prüfer Sequence\\
-		XML & Extensible Markup Language\\
-		XPath & XML Path Language\\
-		XSLT & eXtensible Stylesheet Language Transformations\\
-		W3C & World Wide Web Consortium
+		ACF & Autocorrelation Function\\
+		ANSI & American National Standards Institute\\
+		ASA & Auditory Scene Analysis / American Standards Association\\
+		CASA & Computational Auditory Scene Analysis\\
+		CCF & Cross-Correlation Function\\
+		CCCF & Cross-Channel Correlation Function\\
+		ERB & Equivalent Rectangular Bandwidth\\
+		FIR & Finite Impulse Response\\
+		IBM & Ideal Binary Mask\\
+		IIR & Infinite Impulse Response\\
+		JND & Just-Noticeable Difference\\
+		SACF & Summary Autocorrelation Function\\
+		SNR & Signal-to-Noise Ratio\\
+		T-F & Time-Frequency
 	\end{tabular}
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -167,12 +172,11 @@
 	\mainmatter\mainmatterinit
 
 	\include{chapters/01_introduction}
-	\include{chapters/02_physics}
-	\include{chapters/03_biology}
-	\include{chapters/04_math}
-	\include{chapters/05_casa}
-	\include{chapters/06_implementation}
-	\include{chapters/07_experiments}
+	\include{chapters/02_theoretical_part}
+	\include{chapters/03_methodology}
+	\include{chapters/04_implementation}
+	\include{chapters/05_experiments}
+	\include{chapters/06_conclusion}
 	
 	% \appendix\appendixinit
 	% \include{text/appendix}

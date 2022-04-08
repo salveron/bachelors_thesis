@@ -1,27 +1,81 @@
-\chapter{Computational ASA}\label{chapter:casa}
+\chapter{Methodology}
 
-Now, having described the underlying concepts from different fields of science in previous chapters, it is time to finally focus on computational auditory scene analysis. CASA is said to be the study that groups practical, programmable solutions for auditory scene analysis problems, or the study of ASA by computational means. CASA systems are used primarily for source se\-pa\-ra\-tion, meaning that they are machine listening systems that aim to separate "target" sounds from mixtures, just like people do when try to focus on a specific sound and not to be distracted by others. In that CASA systems differ from systems for blind signal separation – they try to mimic (at least to some extent) the mechanisms inside the human ear, which were discussed in chapter~\ref{chapter:biology}. In this chapter, main principles of CASA systems will be described, along with a typical architecture, goals and applications. In the second part, major works that use computational auditory scene analysis for source separation will be reviewed and compared.
+\section{Mathematical Concepts Used in the Thesis}\label{section:math_concepts}
 
-\section{Principles, Goals and Applications}
-
-Having the definition of CASA above, to be able to limit the requirements to the models it is necessary to describe the principles of CASA and common concepts across different systems. As the most major one, one could pick the restriction of number of microphones used in the input. Being based on the mechanisms of the human auditory system, CASA models only use recordings from one or two microphones (to simulate one or two ears), thus being split to monaural and binaural. Monaural models are researched better, but can't be used for extracting features based on the location of the sound, which is possible to some extent in binaural models, when time differences between the two recordings might be used.\\
-
-To discuss the goals of CASA, it is useful to refer to the goals of ASA. According to Bregman~\cite{Bregman1990}, the primary goal of auditory scene analysis is to produce separate streams from the auditory input. Here, the term "stream" refers to a representation of a distinct sound source in the acoustic environment (see chapter \ref{section:biology_asa}), but, for example in \cite{Wang2006}, the authors also use it when talking about these representations in computer memory.\\
-
-For CASA, Wang and colleagues \cite{Wang2005} proposed that the goal should be to find an ideal binary mask (IBM) for the time-frequency (T-F) representation of the input. If the input is split into T-F units, where time is on horizontal axis and frequency on vertical, the IBM is a binary matrix that has ones in places where the target sound is stronger, and zeroes elsewhere for background units. Ideal binary masks (and time-frequency masks overall) will be discussed in more detail in the following section.\\
-
-The research of CASA systems and their applications in science \cite{Szabo2016} has been quite diverse recently. Some of the models are inspired by various biological experiments \cite{Wang2008}\cite{Boes2011}, while others are trying to address the cocktail party problem in natural environments \cite{Elhilali2008}. Some models try to explicitly simulate perceptual data, but others may refer to perception only very slightly. The expected output for the system implemented in this thesis is to find an IBM to be able to mask noisy background in monophonic piano music.\\
-
-Aside from pure scientific interest, CASA systems find useful applications in everyday life \cite{Wang2006}. Some of them are listed below.
+This section will provide more specific information about the mathematical concepts used in the implementation part. They are listed below.
 
 \begin{description}
-	\item[Speech recognition] Apparently, speech recognition is the most popular field, where CASA systems have been used. Many speech recognition systems have performance losses in acoustic environments, where multiple sources of sound are present. The development is often put in contrast with computer vision systems that basically fulfill the same purpose, but for another human sense.
-	\item[Automatic music transcription] A complex problem on its own (even human experts can come up with different solutions) becomes more complicated when multiple musical instruments are involved and need to be transcribed separately. CASA can certainly bring new insights to the field.
-	\item[Hearing prostheses] Modern hearing aids made for people suffering from hearing loss don't separate speech in noisy environments, amplifying the noisy background too. CASA could address this problem to filter the noise out at least to some extent.
-	\item[Audio information retrieval] Recordings on the Internet usually contain mixtures of sounds from different sources, thus it is necessary to separate them to be able to search efficiently.
+	\item[Equivalent rectangular bandwidth] Equivalent rectangular bandwidth, or ERB, is a measure used for computing bandwidths of the filters for human auditory system. It was defined by Moore and Glasberg in 1983 as \cite{Moore1983}\cite{Holdsworth1988}:
+	\begin{equation}
+		ERB(f) = 6.23f^2 + 93.39f + 28.52
+	\end{equation} 
+	
+	In 1990, the authors published another approximation (linear) \cite{Moore1990}\cite{Wang2006}:
+	\begin{equation}
+		ERB(f) = 24.7\,(4.37f + 1)
+	\end{equation}
+	
+	\item[ERB-rate scale] In psychoacoustics, ERB-rate scale is used to uniformly distribute the filter center frequencies based on their ERB bandwidths. This scale is similar to the critical-band scale of the human auditory system. In 1983, Moore and Glasberg defined it as follows \cite{Moore1983}:
+	\begin{equation}
+		E(f) = 11.17\ln\left|\frac{f + 0.312}{f + 14.675}\right| + 43.0
+	\end{equation}
+	
+	Using the latest approximation of ERB by Moore and Glasberg (1990), ERB-rate scale function is approximated as \cite{Moore1990}\cite{Wang2006}:
+	\begin{equation}
+		E(f) = 21.4\log_{10}\left(0.00437f + 1\right)
+	\end{equation}
+	
+	\item[Gammatone filter] Gammatone filter is a linear filter, whose impulse response is a product of a sinusoidal tone and gamma function \cite{Wang2006}:
+	\begin{equation}
+		g_{f_c}(n) = at^{L-1}\,e^{-2\pi{}nb(f_c)}\,\cos(2\pi{}f_c{}n + \varphi)\,u(n)
+	\end{equation}
+	where $a$ is the filter amplitude, $L$ is its order (number of iterations of filtering), $f_c$ is its center frequency, $\varphi$ is the phase, $u(t)$ is the unit step function ($u(t) = 1$ for $t \ge 0$, and $0$ otherwise), and $b(f_c)$ is the function that determines the bandwidth for a given center frequency \cite{Wang2006}:
+	\begin{equation}
+		b(f) = 1.019\,ERB(f)
+	\end{equation}
+	
+	Gammatone frequency response is defined as follows \cite{Holdsworth1988}:
+	\begin{equation}
+		G(f) = \left[1 + \frac{j\,(f - f_c)}{b(f_c)}\right]^{-L} + 
+		\left[1 + \frac{j\,(f + f_c)}{b(f_c)}\right]^{-L}
+		\qquad\left(-\infty < f < \infty\right)
+	\end{equation}
+	
+	However, when modeling human auditory system, the second term from the definition above can be ignored for sufficiently large $\frac{f_c}{b(f_c)}$ \cite{Wang2006}\cite{Holdsworth1988}:
+	\begin{equation}
+		G(f)\approx\left[1 + \frac{j\,(f - f_c)}{b(f_c)}\right]^{-L}
+		\qquad\left(0 < f < \infty\right)
+	\end{equation}
+	
+	\item[Autocorrelation] Autocorrelation, or autocorrelation function (ACF), is a function that is used to find periodicities and other cues in the input signal. It is defined as the correlation of the signal with its shifted copy. In this thesis the simulated auditory nerve responses will be used to compute it \cite{Wang2006}, and the result will be normalized to receive a set of Pearson's coefficients:
+	\begin{equation}
+		ACF(n, c, \tau) = \frac{
+			\sum\limits_{k=0}^{K-1}a(n - k, c)\,a(n - k -\tau, c)
+		}{
+			\sqrt{\strut\sum\limits_{\tau}{a^2(n - k, c)}}\,
+			\sqrt{\strut\sum\limits_{\tau}{a^2(n - k - \tau, c)}}
+		}\,h(k)
+	\end{equation}
+	where $a(n, c)$ represents the simulated auditory nerve response for frequency channel $c$ and discrete time $n$, $\tau$ is the time lag, $K$ is the length of the sampling window, and $h(k)$ is the window function (usually Hanning, exponential or rectangular).
+	
+	\item[Summary autocorrelation] Summary autocorrelation function, or SACF, is defined as \cite{Wang2006}\cite{Wang2012}:
+	\begin{equation}
+		SACF(n, \tau) = \sum_c{ACF(n, c, \tau)}
+	\end{equation}
+	
+	\item[Cross-channel correlation] Cross-channel correlation is a correlation between signals from different frequency channels. In this thesis it is defined for each two neighboring channels ($c$ and $c + 1$) in each time window as normalized correlation \cite{Wang2006}\cite{Wang2012}:
+	\begin{equation}
+		CCCF(n, c) = \frac{
+			\sum\limits_{k=0}^{K-1}a(n - k, c)\,a(n - k, c + 1)
+		}{
+			\sqrt{\strut\sum\limits_{k=0}^{K-1}{a^2(n - k, c)}}\,
+			\sqrt{\strut\sum\limits_{k=0}^{K-1}{a^2(n - k, c + 1)}}
+		}h(k)
+	\end{equation}
+	where $a(n, c)$ is the simulated auditory nerve response for frequency channel $c$ and discrete time $n$, $K$ is the length of the sampling window, and $h(k)$ is the window function.
 \end{description}
 
-\section{Typical Architecture}
+\section{Architecture of a CASA system}
 
 The architecture described in the next subsections is based on \cite{Wang2006},  \cite{Wang2012} and \cite{Jasti2020}, though it is impossible to say that it is used in all systems -- in different sources the authors use different approaches and methods, and thus different structures of the models.
 
@@ -29,9 +83,9 @@ The architecture described in the next subsections is based on \cite{Wang2006}, 
 
 Usually, a model for computational auditory scene analysis begins with the peripheral analysis of the input sound. Here, the first preparations of the input sound for further processing take place. The expected result of this stage includes a time-frequency representation of the input sound -- a set of so-called T-F units. Since the models try to mimic the human cochlea --- and a lot of scientific attention was given to researching it --- the outcome of this stage is almost always a cochleagram.\\
 
-Cochleagrams are in many cases produced by a filterbank of gammatone filters (see chap\-ter~\ref{section:math_concepts} for a definition). Gammatone filters were picked as the most precise ones to simulate points on the basilar membrane of the inner ear. The number of filters in the filterbank might be chosen by the researcher, but the most frequent choice is $128$. The center frequencies of the filters are distributed on the ERB-rate scale (see chapter \ref{section:math_concepts} for a definition), as it was developed to be similar with the critical-band scale of the human auditory system. The filters' impulse and frequency responses are shown on figure \ref{img:gammatone_filterbank}, however it is worth noting that the filters on the figure are normalized, and in practice frequencies higher than 2\,kHz are often amplified \cite{Wang2006}.
+Cochleagrams are in many cases produced by a filterbank of gammatone filters (see chap\-ter~\ref{section:math_concepts} for a definition). Gammatone filters were picked as the most precise ones to simulate points on the basilar membrane of the inner ear. The number of filters in the filterbank might be chosen by the researcher, but the most frequent choice is $128$. The center frequencies of the filters are distributed on the ERB-rate scale (see chapter \ref{section:math_concepts} for a definition), as it was developed to be similar with the critical-band scale of the human auditory system. The filters' impulse and frequency responses are shown on figure \ref{img:gammatone_filterbank}, however it is worth noting that the filters on the figure are normalized, and in practice frequencies higher than 2\,kHz are often amplified \cite{Wang2006}.\\
 
-\begin{figure}[h]
+\begin{figure}[t]
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
@@ -58,8 +112,8 @@ If you look at a cochleagram and a spectrogram of the same sound at the same tim
 After the cochleagram is computed, a classic CASA system involves computing a correlogram. In this thesis, correlograms will be put to the feature extraction stage, however some sources discuss them along with the cochleagrams in the peripheral analysis stage \cite{Jasti2020}.\\
 
 According to \cite{Wang2006}, the term correlogram was introduced by Slaney and Lyon in 1990 \cite{Slaney1990} as \textit{"an animated picture of the sound that shows
-frequency content along the vertical axis and time structure along
-the horizontal axis"} (in this thesis the correlogram is a three-dimensional array). The authors used autocorrelation function (see chapter \ref{section:math_concepts} for a definition) on each frequency channel to compute it and described that if the sound is periodic, then the ACF will have peaks in places corresponding to the lags that are equal to the period of repetition. This property of the autocorrelation function has been extensively used in signal processing to estimate pitch and the corresponding fundamental frequencies.\\
+	frequency content along the vertical axis and time structure along
+	the horizontal axis"} (in this thesis the correlogram is a three-dimensional array). The authors used autocorrelation function (see chapter \ref{section:math_concepts} for a definition) on each frequency channel to compute it and described that if the sound is periodic, then the ACF will have peaks in places corresponding to the lags that are equal to the period of repetition. This property of the autocorrelation function has been extensively used in signal processing to estimate pitch and the corresponding fundamental frequencies.\\
 
 So, the fundamental frequency is estimated using the correlogram and the representations of the higher harmonics in it. If you recall the conversation about harmonics from chapter \ref{section:physics_harmonics_pitch}, you may remember that harmonics are periodic at their fundamental frequency, so if the fundamental frequency is, for example, 100\,Hz (the period is 10\,ms), the second harmonic is 200\,Hz (5\,ms), and thus repeats every 10\,ms as well. The correlogram depicts this property in different frequency channels, and when the autocorrelations are summed up, the resulting summary ACF (see chapter \ref{section:math_concepts} for a definition) will have peaks in places corresponding to the period of the fundamental frequency.\\
 
@@ -84,15 +138,13 @@ A notable outcome of this stage is a time-frequency mask of the input cochleagra
 As it was mentioned earlier, Wang and colleagues \cite{Wang2005} proposed ideal binary mask (IBM) to be the primary goal of CASA. The IBM is defined as follows \cite{Wang2006}\cite{Wang2012}:
 \begin{equation}
 	IBM(n, c) = 
-		\begin{cases}
-			1 & \quad\text{if } SNR(n, c) \ge LC \\
-			0 & \quad\text{otherwise}
-		\end{cases}
+	\begin{cases}
+		1 & \quad\text{if } SNR(n, c) \ge LC \\
+		0 & \quad\text{otherwise}
+	\end{cases}
 \end{equation}
 where $SNR(n, c)$ is the signal-to-noise ratio, or the difference between the target sound energy and the interference energy in the T-F unit, and $LC$ is the local criterion chosen as a threshold for the SNR function (most commonly 0\,dB).
 
 \subsection{Resynthesis}
 
-Finally, some systems include the resynthesis stage to convert the masked T-F representation back to the sound waveform. This is useful for the evaluation of the resulting CASA system in cases when listening experiments are held, or signal-to-noise ratios need to be compared before and after the processing \cite{Wang2006}. The technique for the resynthesis was proposed by Weintraub in his PhD~thesis in 1985 \cite{Weintraub1985}: the outputs from each gammatone filter in the filterbank were reversed in time to remove the phase shifts, then passed backwards through each filter and reversed back in time again.
-
-\section{Major Works}
+Finally, some systems include the resynthesis stage to convert the masked T-F representation back to the sound waveform. This is useful for evaluation of the resulting CASA system in cases when listening experiments are held, or signal-to-noise ratios need to be compared before and after the processing \cite{Wang2006}. The technique for resynthesis was proposed by Weintraub in his PhD~thesis in 1985 \cite{Weintraub1985}: the outputs from each gammatone filter in the filterbank were reversed in time to remove the phase shifts, then passed backwards through each filter and reversed back in time again.

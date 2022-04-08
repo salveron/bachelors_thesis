@@ -106,17 +106,17 @@
 \DeclareRobustCommand{\ctufitdeclarationdate}[1]{
 	\def\thectufitdeclarationdate{#1}
 }
-\DeclareRobustCommand{\ctufitabstractCZE}[1]{
-	\def\thectufitabstrakt{#1}
-}
 \DeclareRobustCommand{\ctufitabstractENG}[1]{
 	\def\thectufitabstract{#1}
 }
-\DeclareRobustCommand{\ctufitkeywordsCZE}[1]{
-	\def\thectufitklicovaslova{#1}
+\DeclareRobustCommand{\ctufitabstractCZE}[1]{
+	\def\thectufitabstrakt{#1}
 }
 \DeclareRobustCommand{\ctufitkeywordsENG}[1]{
 	\def\thectufitkeywords{#1}
+}
+\DeclareRobustCommand{\ctufitkeywordsCZE}[1]{
+	\def\thectufitklicovaslova{#1}
 }
 \DeclareRobustCommand{\thectufitthesistype}{
 	\if\@ctufitthesistype B{%
@@ -314,17 +314,17 @@
 % headers and footers end
 
 
+\newenvironment{abstract}{%
+	\vskip\bigskipamount
+	\noindent
+	{{\frontchapterfont\begin{flushleft}{\color{heading}Abstract}\end{flushleft}}}%
+	\bigskip
+	\noindent\ignorespaces}
+
 \newenvironment{abstrakt}{%
   \vspace*{18mm}
   \noindent
   {{\frontchapterfont\begin{flushleft}{\color{heading}Abstrakt}\end{flushleft}}}%
-  \bigskip
-  \noindent\ignorespaces}
-
-\newenvironment{abstract}{%
-  \vskip\bigskipamount
-  \noindent
-  {{\frontchapterfont\begin{flushleft}{\color{heading}Abstract}\end{flushleft}}}%
   \bigskip
   \noindent\ignorespaces}
   
@@ -356,7 +356,7 @@
 % declaration page END
 
 % abstract page
-\newenvironment{abstractpage}{\frontchapternotprinted{Abstrakt}
+\newenvironment{abstractpage}{\frontchapternotprinted{Abstract}
 }{}
 % abstract page END
 
@@ -445,9 +445,9 @@
 
 \DeclareRobustCommand{\printabstractpage}{%
 \begin{abstractpage}
-\begin{abstrakt}% Enter abstract in CZECH.
-\thectufitabstrakt
-\end{abstrakt}
+\begin{abstract}% Enter abstract in ENGLISH.
+	\thectufitabstract
+\end{abstract}
 
 \vskip 0.5cm
 
@@ -455,9 +455,9 @@
 
 \vskip 1cm
 
-\begin{abstract}% Enter abstract in ENGLISH.
-\thectufitabstract
-\end{abstract}
+\begin{abstrakt}% Enter abstract in CZECH.
+	\thectufitabstrakt
+\end{abstrakt}
 
 \vskip 0.5cm
 
