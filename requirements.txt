@@ -1,6 +1,6 @@
 numpy
 matplotlib
 scipy
-brian2hears
 scikit-image
 statsmodels
+brian2hears

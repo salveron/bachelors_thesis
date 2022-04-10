@@ -75,7 +75,7 @@ def _decrease_time_resolution(cochleagram, samplerate):
     return rms
 
 
-def plot_process_results(cochleagram, ibm, masked_cochleagram, samplerate, figsize=(18, 5)):
+def plot_process_results(cochleagram, ibm, masked_cochleagram, samplerate, figsize=(16, 4)):
     """Plot the results of the all-at-once function.
 
     :param np.ndarray cochleagram: Input cochleagram
@@ -86,9 +86,10 @@ def plot_process_results(cochleagram, ibm, masked_cochleagram, samplerate, figsi
 
     """
     fig, (ax1, ax2, ax3) = subplots(ncols=3, figsize=figsize, sharey="row")
+    subplots_adjust(wspace=0.15)
 
     rms = _decrease_time_resolution(cochleagram, samplerate)
-    ax1.imshow(rms, origin='lower', aspect='auto', interpolation="none", vmin=0,
+    ax1.imshow(rms, origin='lower', aspect='auto', vmin=0, interpolation="none",
                extent=[0, cochleagram.shape[1] / samplerate, 0, cochleagram.shape[0]])
     ax1.set_title("Cochleagram")
     ax1.set_xlabel("Time (s)")
@@ -100,9 +101,10 @@ def plot_process_results(cochleagram, ibm, masked_cochleagram, samplerate, figsi
     ax2.set_ylabel("Frequency channels")
 
     rms = _decrease_time_resolution(masked_cochleagram, samplerate)
-    ax3.imshow(rms, origin='lower', aspect='auto', vmin=0, interpolation="none", cmap="Greys")
-    ax3.set_title("IBM estimate")
+    ax3.imshow(rms, origin='lower', aspect='auto', vmin=0, interpolation="none")
+    ax3.set_title("Masked cochleagram")
     ax3.set_xlabel("Time (s)")
     ax3.set_ylabel("Frequency channels")
 
+    tight_layout()
     show()

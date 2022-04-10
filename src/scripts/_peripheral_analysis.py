@@ -62,7 +62,7 @@ def plot_cochleagram(cochleagram, samplerate, figsize=(12, 7)):
     rms = _decrease_time_resolution(cochleagram, samplerate)
 
     figure(figsize=figsize)
-    img = imshow(rms, origin='lower', aspect='auto', interpolation="none", vmin=0,
+    img = imshow(rms, origin='lower', aspect='auto', vmin=0, interpolation="none",
                  extent=[0, cochleagram.shape[1] / samplerate, 0, cochleagram.shape[0]])
     colorbar(img)
 

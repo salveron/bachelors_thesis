@@ -3,8 +3,6 @@
 #######################################################
 """Gathers all functions for the thesis in one place."""
 
-from brian2 import Hz, kHz
-
 from _sounds import (load_sound,
                      save_sound,
                      add_white_noise,
@@ -41,12 +39,15 @@ from _utils import (MIN_PIANO_KEY_FREQ,
                     plot_process_results)
 
 
-def process(file_name, save_noised=False, save_resynth=False, **kwargs):
+def process(file_name, save_noised=False, noised_file_name=None,
+            save_resynth=False, resynth_file_name=None, **kwargs):
     """All-at-once function made for experiments.
 
     :param str file_name: Name of the input .wav file from the data folder
     :param bool save_noised: If True, saves the noised sound to the output folder
+    :param Optional[str] noised_file_name: Name of the save file for the noised sound
     :param bool save_resynth: If True, saves the resynthesized sound to the output folder
+    :param Optional[str] resynth_file_name: Name of the save file for the resynthesized sound
     :param dict kwargs: Dictionary with parameters for the algorithms. Described below in more detail.
 
     If some parameters are missing in the input dictionary, they will be set to default values. Here is the list
@@ -78,6 +79,11 @@ def process(file_name, save_noised=False, save_resynth=False, **kwargs):
           T-F unit corresponding to the estimated F0 for the current time frame (default = 0.7)
 
     """
+    import time
+    from brian2 import Hz, kHz, second
+
+    time_start = time.time()
+
     if "n_channels" not in kwargs.keys(): kwargs["n_channels"] = 128
     if "min_freq" not in kwargs.keys(): kwargs["min_freq"] = MIN_PIANO_KEY_FREQ
     if "max_freq" not in kwargs.keys(): kwargs["max_freq"] = MAX_PIANO_KEY_FREQ
@@ -99,10 +105,12 @@ def process(file_name, save_noised=False, save_resynth=False, **kwargs):
 
     # Save the noised sound
     if save_noised:
-        noised_file_name = base_name + " Noised." + extension
+        if noised_file_name is None:
+            noised_file_name = base_name + " Noised." + extension
         save_sound(sound, noised_file_name)
 
     # Compute cochleagram
+    print("Cochleagram... ", end="")
     cochleagram, center_freqs = compute_cochleagram(sound,
                                                     n_channels=kwargs["n_channels"],
                                                     min_freq=kwargs["min_freq"],
@@ -110,49 +118,68 @@ def process(file_name, save_noised=False, save_resynth=False, **kwargs):
                                                     min_bw=kwargs["min_bw"],
                                                     max_bw=kwargs["max_bw"],
                                                     return_cf=True)
+    print("done! ", end="")
 
     # Apply windowing (rectangular)
+    print("Windowing... ", end="")
     windows = apply_windowing(cochleagram,
                               samplerate=sound.samplerate,
                               w_size_ms=kwargs["w_size_ms"],
                               w_overlap_ms=kwargs["w_overlap_ms"])
+    print("done! ", end="")
 
     # Compute correlogram
+    print("Correlogram... ", end="")
     correlogram = compute_correlogram(windows,
                                       n_lags=(kwargs["n_lags"]
                                               if "n_lags" in kwargs.keys()
                                               else None))
+    print("done! ", end="")
 
     # Summary ACF
     sacf = compute_sacf(correlogram)
 
     # Estimates for F0 and their corresponding lags
+    print("F0 estimates... ", end="")
     fundamental_lags, fundamental_freqs = find_fundamental_frequencies(sacf,
                                                                        samplerate=sound.samplerate,
                                                                        n_harmonics=kwargs["n_harmonics"])
+    print("done! ", end="")
 
     # Ideal binary mask estimate
+    print("IBM... ", end="")
     ibm = compute_ibm(windows,
                       fundamental_lags,
                       samplerate=sound.samplerate,
                       energy_threshold=kwargs["energy_threshold"],
                       agreement_threshold=kwargs["agreement_threshold"],
                       correlogram=correlogram)
+    print("done! ", end="")
 
     # Mask the cochleagram
+    print("Masking... ", end="")
     masked_cochleagram = apply_mask(cochleagram,
                                     ibm,
                                     samplerate=sound.samplerate,
                                     w_size_ms=kwargs["w_size_ms"],
                                     w_overlap_ms=kwargs["w_overlap_ms"])
+    print("done! ", end="")
 
     # Resynthesize the sound
     if save_resynth:
+        print("Resynthesis... ", end="")
         resynth = resynthesize_sound(masked_cochleagram, samplerate=sound.samplerate)
-        save_sound(resynth, base_name + " Resynth." + extension)
+        print("done! ", end="")
+
+        if resynth_file_name is None:
+            resynth_file_name = base_name + " Resynth." + extension
+        save_sound(resynth, resynth_file_name)
 
     # Plot cochleagram, IBM and masked cochleagram
     plot_process_results(cochleagram,
                          ibm,
                          masked_cochleagram,
                          samplerate=sound.samplerate)
+
+    # Print execution time
+    print(f"Execution time: {(time.time() - time_start)} s")

@@ -26,7 +26,7 @@ def compute_correlogram(windows, n_lags=None):
     if n_lags is None:
         n_lags = windows.shape[2]
 
-    return np.apply_along_axis(lambda vec: acf(vec, nlags=n_lags, fft=False, missing="conservative"), 2, windows)
+    return np.apply_along_axis(lambda vec: acf(vec, nlags=n_lags, missing="conservative"), 2, windows)
 
 
 def compute_sacf(correlogram):
