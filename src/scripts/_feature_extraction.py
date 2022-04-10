@@ -80,7 +80,7 @@ def compute_cccf(windows):
     return cccf
 
 
-def find_dominant_harmonics(sacf, samplerate, n_harmonics=5, return_boundaries=False):
+def find_dominant_lags(sacf, samplerate, n_harmonics=5, return_boundaries=False):
     """Find dominant harmonics in the input summary autocorrelation.
 
     :param np.ndarray sacf: Input SACF array
@@ -117,7 +117,7 @@ def find_fundamental_frequencies(sacf, samplerate, n_harmonics=5):
     :rtype: tuple
 
     """
-    harmonics = find_dominant_harmonics(sacf, samplerate, n_harmonics)
+    harmonics = find_dominant_lags(sacf, samplerate, n_harmonics)
 
     lags = harmonics[:, 0]
     frequencies = samplerate / lags
@@ -162,7 +162,8 @@ def compute_agreement_ratios(correlogram, fundamental_lags, samplerate):
 
 
 def plot_correlogram(correlogram, window_num, samplerate,
-                     cccf=None, sacf=None, show_f0=False, show_harmonics=False, n_harmonics=5, figsize=(12, 10)):
+                     cccf=None, sacf=None, show_f0=False, show_harmonics=False, n_harmonics=5, figsize=(12, 10),
+                     save_figure=False, save_file_path=None):
     """Plot correlogram for the input time frame.
 
     Plots correlogram (autocorrelations) along with corresponding cross-channel correlation and summary
@@ -177,6 +178,8 @@ def plot_correlogram(correlogram, window_num, samplerate,
     :param bool show_harmonics: If True, displays `n_harmonics` estimated harmonics for f0
     :param Optional[int] n_harmonics: Number of harmonics to display, if `show_harmonics` is True
     :param tuple figsize: Size of the matplotlib figure
+    :param bool save_figure: If True, saves the resulting plot to a JPG file
+    :param Optional[str] save_file_path: Path to the output file
 
     """
     if cccf is None:
@@ -187,23 +190,22 @@ def plot_correlogram(correlogram, window_num, samplerate,
     fig, ((ax1, ax2), (ax3, ax4)) = subplots(ncols=2, nrows=2, figsize=figsize, sharey="row", sharex="col",
                                              gridspec_kw={"width_ratios": [8, 1], "height_ratios": [8, 1]})
     ax4.set_visible(False)
-    subplots_adjust(wspace=0.03, hspace=0.03)
-
-    fig.suptitle(f"Correlogram for Time Frame #{window_num}")
+    subplots_adjust(wspace=0.05, hspace=0.05)
 
     ax1.imshow(correlogram[window_num], origin='lower', aspect='auto', vmin=0, interpolation="none", cmap='Greys')
-    ax1.set_ylabel("Frequency Channels")
+    ax1.set_title(f"Correlogram for Time Frame #{window_num}", fontsize=16)
+    ax1.set_ylabel("Frequency Channels", fontsize=14)
 
     ax2.plot(cccf[window_num], np.arange(correlogram.shape[1]))
-    ax2.set_xlabel("CCC")
+    ax2.set_xlabel("CCCF", fontsize=14)
     ax2.tick_params(axis="x", reset=True)
 
     ax3.plot(sacf[window_num])
-    ax3.set_xlabel("Lags")
-    ax3.set_ylabel("SACF")
+    ax3.set_xlabel("Lags", fontsize=14)
+    ax3.set_ylabel("SACF", fontsize=14)
 
     if show_harmonics or show_f0:
-        harmonics = find_dominant_harmonics(sacf, samplerate, n_harmonics)[window_num]
+        harmonics = find_dominant_lags(sacf, samplerate, n_harmonics)[window_num]
 
         if show_harmonics:
             for harmonic in harmonics:
@@ -212,5 +214,10 @@ def plot_correlogram(correlogram, window_num, samplerate,
         if show_f0:
             lag = harmonics[0]
             ax3.scatter(lag, sacf[window_num, lag], color="red")
+
+    if save_figure:
+        if save_file_path is None:
+            save_file_path = "correlogram.jpg"
+        fig.savefig(save_file_path, bbox_inches='tight', dpi=384)
 
     show()

@@ -13,7 +13,9 @@ This section will provide more specific information about the mathematical conce
 	In 1990, the authors published another approximation (linear) \cite{Moore1990}\cite{Wang2006}:
 	\begin{equation}
 		ERB(f) = 24.7\,(4.37f + 1)
+		\label{equation:ERB_1990}
 	\end{equation}
+	where $f$ is frequency in kHz.
 	
 	\item[ERB-rate scale] In psychoacoustics, ERB-rate scale is used to uniformly distribute the filter center frequencies based on their ERB bandwidths. This scale is similar to the critical-band scale of the human auditory system. In 1983, Moore and Glasberg defined it as follows \cite{Moore1983}:
 	\begin{equation}
@@ -25,11 +27,12 @@ This section will provide more specific information about the mathematical conce
 		E(f) = 21.4\log_{10}\left(0.00437f + 1\right)
 	\end{equation}
 	
-	\item[Gammatone filter] Gammatone filter is a linear filter, whose impulse response is a product of a sinusoidal tone and gamma function \cite{Wang2006}:
+	\item[Gammatone filter] A gammatone filter is a linear filter, whose impulse response is a product of a sinusoidal tone and gamma function \cite{Wang2006}:
 	\begin{equation}
-		g_{f_c}(n) = at^{L-1}\,e^{-2\pi{}nb(f_c)}\,\cos(2\pi{}f_c{}n + \varphi)\,u(n)
+		g_{f_c}(t) = at^{L-1}\,e^{-2\pi{}tb(f_c)}\,\cos(2\pi{}f_c{}t + \varphi)\,u(t)
+		\label{equation:gammatone_impulse_response}
 	\end{equation}
-	where $a$ is the filter amplitude, $L$ is its order (number of iterations of filtering), $f_c$ is its center frequency, $\varphi$ is the phase, $u(t)$ is the unit step function ($u(t) = 1$ for $t \ge 0$, and $0$ otherwise), and $b(f_c)$ is the function that determines the bandwidth for a given center frequency \cite{Wang2006}:
+	where $a$ is the filter amplitude, $L$ is its order (number of iterations of filtering), $f_c$ is its center frequency, $\varphi$ is the phase, $u(t)$ is the unit-step function ($u(t) = 1$ for $t \ge 0$, and $0$ otherwise), and $b(f_c)$ is the function that determines the bandwidth for a given center frequency \cite{Wang2006}:
 	\begin{equation}
 		b(f) = 1.019\,ERB(f)
 	\end{equation}
@@ -55,12 +58,14 @@ This section will provide more specific information about the mathematical conce
 			\sqrt{\strut\sum\limits_{\tau}{a^2(n - k, c)}}\,
 			\sqrt{\strut\sum\limits_{\tau}{a^2(n - k - \tau, c)}}
 		}\,h(k)
+	\label{equation:ACF}
 	\end{equation}
 	where $a(n, c)$ represents the simulated auditory nerve response for frequency channel $c$ and discrete time $n$, $\tau$ is the time lag, $K$ is the length of the sampling window, and $h(k)$ is the window function (usually Hanning, exponential or rectangular).
 	
 	\item[Summary autocorrelation] Summary autocorrelation function, or SACF, is defined as \cite{Wang2006}\cite{Wang2012}:
 	\begin{equation}
 		SACF(n, \tau) = \sum_c{ACF(n, c, \tau)}
+		\label{equation:SACF}
 	\end{equation}
 	
 	\item[Cross-channel correlation] Cross-channel correlation is a correlation between signals from different frequency channels. In this thesis it is defined for each two neighboring channels ($c$ and $c + 1$) in each time window as normalized correlation \cite{Wang2006}\cite{Wang2012}:
@@ -71,17 +76,18 @@ This section will provide more specific information about the mathematical conce
 			\sqrt{\strut\sum\limits_{k=0}^{K-1}{a^2(n - k, c)}}\,
 			\sqrt{\strut\sum\limits_{k=0}^{K-1}{a^2(n - k, c + 1)}}
 		}h(k)
+		\label{equation:CCCF}
 	\end{equation}
 	where $a(n, c)$ is the simulated auditory nerve response for frequency channel $c$ and discrete time $n$, $K$ is the length of the sampling window, and $h(k)$ is the window function.
 \end{description}
 
-\section{Architecture of a CASA system}
+\section{Architecture of the System}\label{section:casa_architecture}
 
-The architecture described in the next subsections is based on \cite{Wang2006},  \cite{Wang2012} and \cite{Jasti2020}, though it is impossible to say that it is used in all systems -- in different sources the authors use different approaches and methods, and thus different structures of the models.
+Next, to successfully address a concrete implemented system, it is necessary to understand its architecture. The architecture described in the following subsections is based on \cite{Wang2006}, \cite{Wang2012} and \cite{Jasti2020}, though it is impossible to say that it is used in all systems -- in different sources the authors use different approaches and methods, and thus different structures of the models.
 
-\subsection{Peripheral Analysis}
+\subsection{Peripheral Analysis}\label{subsection:casa_peripheral_analysis}
 
-Usually, a model for computational auditory scene analysis begins with the peripheral analysis of the input sound. Here, the first preparations of the input sound for further processing take place. The expected result of this stage includes a time-frequency representation of the input sound -- a set of so-called T-F units. Since the models try to mimic the human cochlea --- and a lot of scientific attention was given to researching it --- the outcome of this stage is almost always a cochleagram.\\
+Usually, a model for computational auditory scene analysis begins with the peripheral analysis of the input sound. Here, first preparations of the input sound for further processing take place. The expected result of this stage includes a time-frequency representation of the input sound -- a set of so-called T-F units. Since the models try to mimic the human cochlea --- and a lot of scientific attention was given to researching it --- the outcome of this stage is almost always a cochleagram.\\
 
 Cochleagrams are in many cases produced by a filterbank of gammatone filters (see chap\-ter~\ref{section:math_concepts} for a definition). Gammatone filters were picked as the most precise ones to simulate points on the basilar membrane of the inner ear. The number of filters in the filterbank might be chosen by the researcher, but the most frequent choice is $128$. The center frequencies of the filters are distributed on the ERB-rate scale (see chapter \ref{section:math_concepts} for a definition), as it was developed to be similar with the critical-band scale of the human auditory system. The filters' impulse and frequency responses are shown on figure \ref{img:gammatone_filterbank}, however it is worth noting that the filters on the figure are normalized, and in practice frequencies higher than 2\,kHz are often amplified \cite{Wang2006}.\\
 
@@ -107,7 +113,7 @@ If you look at a cochleagram and a spectrogram of the same sound at the same tim
 
 % TODO: Meddis hair cells?
 
-\subsection{Feature Extraction}
+\subsection{Feature Extraction}\label{subsection:casa_feature_extraction}
 
 After the cochleagram is computed, a classic CASA system involves computing a correlogram. In this thesis, correlograms will be put to the feature extraction stage, however some sources discuss them along with the cochleagrams in the peripheral analysis stage \cite{Jasti2020}.\\
 
@@ -125,7 +131,7 @@ Some authors also work with cross-correlograms at this stage. According to \cite
 \end{equation}
 where $a_L(n, c)$ and $a_R(n, c)$ is the above-mentioned simulated auditory nerve response from the left and right ears respectively, $\tau$ is the lag, $h(k)$ is the window function, and $K$ is the size of the sampling window.
 
-\subsection{Mid-Level Representation and Scene Organization}
+\subsection{Mid-Level Representation and Scene Organization}\label{subsection:casa_segmentation_and_grouping}
 
 Next, after the feature extraction stage, follows some work related to segmentation and grouping, which according to Bregman are the main two stages of auditory scene analysis (see chapter \ref{section:biology_asa}). For this part, different authors come up with different names and implementations, but in this thesis it will be split into two stages as in \cite{Wang2006} and \cite{Jasti2020}: mid-level representation and scene organization.\\
 
@@ -145,6 +151,6 @@ As it was mentioned earlier, Wang and colleagues \cite{Wang2005} proposed ideal 
 \end{equation}
 where $SNR(n, c)$ is the signal-to-noise ratio, or the difference between the target sound energy and the interference energy in the T-F unit, and $LC$ is the local criterion chosen as a threshold for the SNR function (most commonly 0\,dB).
 
-\subsection{Resynthesis}
+\subsection{Resynthesis}\label{subsection:casa_resynthesis}
 
 Finally, some systems include the resynthesis stage to convert the masked T-F representation back to the sound waveform. This is useful for evaluation of the resulting CASA system in cases when listening experiments are held, or signal-to-noise ratios need to be compared before and after the processing \cite{Wang2006}. The technique for resynthesis was proposed by Weintraub in his PhD~thesis in 1985 \cite{Weintraub1985}: the outputs from each gammatone filter in the filterbank were reversed in time to remove the phase shifts, then passed backwards through each filter and reversed back in time again.

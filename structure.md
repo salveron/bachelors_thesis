@@ -1,18 +1,5 @@
 # Structure of the Thesis:
 
----
-
-### Legend:
-
-- **(+)** = "The text is written"
-- **(++)** = "The text is written and formatted"
-- **(?)** = "Do I need it?"
-- **(??)** = "Need to specify" + "Do I need it?"
-
-### List of Chapters (TODO list):
-
-I will mark each section after I write it and then will move this list to the "Table of Contents" section.
-
 1. Acknowledgements
 2. Declaration
 3. Abstract, keywords
@@ -39,15 +26,14 @@ I will mark each section after I write it and then will move this list to the "T
       2. Overview of the Selected Algorithms
 
 7. Methodology
-   1. Overview of the Math Used in the Implementation Part
+   1. Mathematical Concepts Used in the Thesis
    2. CASA: Architecture
 
 8. Implementation
-   3. Cochleagram
-   4. Correlogram
-   5. Feature Extraction
-   6. Segmentation and Grouping
-   7. Resynthesis
+   1. Cochleagram
+   2. Correlogram and Other Features
+   3. Masking
+   4. Resynthesis **(?)**
 
 9. Experiments and Results
    1. Dataset Overview

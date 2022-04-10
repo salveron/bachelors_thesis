@@ -39,11 +39,11 @@ def compute_cochleagram(sound, n_channels, min_freq=MIN_PIANO_KEY_FREQ, max_freq
     # Gammatone filterbank
     gammatone = Gammatone(sound, center_freqs)
 
-    # Application of the cubic root function + clipping
-    cochlea = FunctionFilterbank(gammatone, lambda x: clip(x, 0, Inf) ** (1.0 / 3.0))
+    # Clipping (unit step function) + cubic root function to amplify low amplitudes
+    clipped = FunctionFilterbank(gammatone, lambda x: clip(x, 0, Inf) ** (1.0 / 3.0))
 
     # Bandpass filtering for every channel
-    cochleagram = Butterworth(cochlea, n_channels, order=2, fc=cutoffs, btype="bandpass").process().T
+    cochleagram = Butterworth(clipped, n_channels, order=2, fc=cutoffs, btype="bandpass").process().T
 
     if return_cf:
         return cochleagram, center_freqs
@@ -51,23 +51,33 @@ def compute_cochleagram(sound, n_channels, min_freq=MIN_PIANO_KEY_FREQ, max_freq
         return cochleagram
 
 
-def plot_cochleagram(cochleagram, samplerate, figsize=(12, 7)):
+def plot_cochleagram(cochleagram, samplerate, plot_title="Cochleagram",
+                     figsize=(12, 7), save_figure=False, save_file_path=None):
     """Plot a cochleagram.
 
     :param np.ndarray cochleagram: Input cochleagram
     :param int samplerate: Samplerate of the input sound
+    :param str plot_title: Title of the plot
     :param tuple figsize: Size of the matplotlib figure
+    :param bool save_figure: If True, saves the resulting plot to a JPG file
+    :param Optional[str] save_file_path: Path to the output file
 
     """
     rms = _decrease_time_resolution(cochleagram, samplerate)
 
-    figure(figsize=figsize)
-    img = imshow(rms, origin='lower', aspect='auto', vmin=0, interpolation="none",
+    fig = figure(figsize=figsize)
+    img = imshow(rms, origin='lower', aspect='auto', vmin=0,
                  extent=[0, cochleagram.shape[1] / samplerate, 0, cochleagram.shape[0]])
     colorbar(img)
 
-    title("Cochleagram")
-    xlabel("Time (s)")
-    ylabel("Frequency Channels")
+    title(plot_title, fontsize=14)
+    xlabel("Time (s)", fontsize=14)
+    ylabel("Frequency Channels", fontsize=14)
 
+    if save_figure:
+        if save_file_path is None:
+            save_file_path = "cochleagram.jpg"
+        fig.savefig(save_file_path, bbox_inches='tight', dpi=384)
+
+    tight_layout()
     show()
