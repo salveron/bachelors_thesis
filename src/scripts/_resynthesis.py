@@ -30,10 +30,19 @@ def apply_mask(cochleagram, ibm, samplerate, w_size_ms=WINDOW_SIZE_MS, w_overlap
     windows = apply_windowing(cochleagram, samplerate, w_size_ms, w_overlap_ms)
 
     masked_cochleagram = np.zeros_like(cochleagram)
-    for _t, _f in np.ndindex(ibm.shape):
+    for _t in range(ibm.shape[0]):
+
         _t_lo = int(_t * (w_size_ms - w_overlap_ms) * samplerate)
+        _t_mid = int(_t_lo + w_overlap_ms * samplerate)
         _t_hi = int(_t_lo + w_size_ms * samplerate)
-        masked_cochleagram[_f, _t_lo:_t_hi] = windows[_t, _f] * ibm[_t, _f]
+
+        # Overlapped part at the beginning
+        masked_cochleagram[:, _t_lo:_t_mid] += np.multiply(windows[_t, :, :(_t_mid - _t_lo)].T, ibm[_t]).T
+        if _t != 0:
+            masked_cochleagram[:, _t_lo:_t_mid] /= 2
+
+        # The leftovers
+        masked_cochleagram[:, _t_mid:_t_hi] = np.multiply(windows[_t, :, (_t_mid - _t_lo):].T, ibm[_t]).T
 
     return masked_cochleagram
 
@@ -47,7 +56,7 @@ def resynthesize_sound(cochleagram, samplerate):
     :rtype: Sound
 
     """
-    # TODO: Invert cochleagram?
-    resynth = Sound(cochleagram.sum(axis=0), samplerate)
+    # FUTURE: Invert cochleagram according to Weintraub?
+    resynth = Sound(cochleagram.mean(axis=0), samplerate)
 
     return resynth

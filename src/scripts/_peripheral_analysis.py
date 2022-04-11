@@ -11,8 +11,7 @@ from _utils import (MIN_PIANO_KEY_FREQ,
                     _decrease_time_resolution)
 
 
-def compute_cochleagram(sound, n_channels, min_freq=MIN_PIANO_KEY_FREQ, max_freq=MAX_PIANO_KEY_FREQ,
-                        min_bw=50*Hz, max_bw=1*kHz, return_cf=False):
+def compute_cochleagram(sound, n_channels, min_freq=MIN_PIANO_KEY_FREQ, max_freq=MAX_PIANO_KEY_FREQ, return_cf=False):
     """Compute a cochleagram from the input sound.
 
     The cochleagram is computed using filters and filterbanks from Brian2Hears library.
@@ -22,28 +21,22 @@ def compute_cochleagram(sound, n_channels, min_freq=MIN_PIANO_KEY_FREQ, max_freq
     :param int n_channels: Number of frequency channels in the output cochleagram
     :param float min_freq: Lowest frequency value (for piano keys, the lowest value is 27.5 Hz = A0, #1)
     :param float max_freq: Highest frequency value (for piano keys, the highest value is 4.186 kHz = C8, #88)
-    :param float min_bw: Lowest frequency channel bandwidth (default = 50 Hz)
-    :param float max_bw: Highest frequency channel bandwidth (default = 1 kHz)
     :param bool return_cf: If True, also returns center frequencies of the filters
     :returns: Cochleagram
-    :rtype: np.ndarray
+    :rtype: Union[tuple, np.ndarray]
 
     """
     min_freq = float(min_freq) * Hz
     max_freq = float(max_freq) * Hz
 
     center_freqs = erbspace(min_freq, max_freq, n_channels)
-    bandwidth = linspace(min_bw, max_bw, n_channels)
-    cutoffs = vstack((center_freqs - bandwidth / 2, center_freqs + bandwidth / 2))
 
     # Gammatone filterbank
     gammatone = Gammatone(sound, center_freqs)
 
     # Clipping (unit step function) + cubic root function to amplify low amplitudes
-    clipped = FunctionFilterbank(gammatone, lambda x: clip(x, 0, Inf) ** (1.0 / 3.0))
-
-    # Bandpass filtering for every channel
-    cochleagram = Butterworth(clipped, n_channels, order=2, fc=cutoffs, btype="bandpass").process().T
+    clipper = FunctionFilterbank(gammatone, lambda x: clip(x, 0, Inf) ** (1.0 / 3.0))
+    cochleagram = clipper.process().T
 
     if return_cf:
         return cochleagram, center_freqs

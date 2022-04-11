@@ -102,7 +102,7 @@ def compute_ibm(windows, fundamental_lags, samplerate, energy_threshold, agreeme
     ibm = np.logical_and((energy_values > energy_threshold),
                          (agreement_ratios > agreement_threshold))
 
-    # TODO: try to apply horizontal and vertical segmentation?
+    # FUTURE: try to somehow apply horizontal and vertical segmentation?
     # time_segmentation = form_time_segments(correlogram, twcf_threshold)
     # frequency_segmentation = form_frequency_segments(correlogram, cccf_threshold)
 

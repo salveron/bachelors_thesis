@@ -61,9 +61,6 @@ def process(file_name, save_noised=False, noised_file_name=None,
         - min_freq, max_freq: lowest and highest center frequency for the gammatone filterbank
           (default = MIN_PIANO_KEY_FREQ, MAX_PIANO_KEY_FREQ)
 
-        - min_bw, max_bw: bandwidths for the lowest and highest gammatone filters in the filterbank
-          (default = 50 Hz, 1 kHz)
-
         _ w_size_ms, w_overlap_ms: size and overlap for the windowing function in milliseconds
           (default = WINDOW_SIZE_MS, WINDOW_OVERLAP_MS)
 
@@ -72,11 +69,11 @@ def process(file_name, save_noised=False, noised_file_name=None,
         - n_harmonics (int): number of harmonics for F0 estimation. Too low or high numbers may give incorrect
           results (default = 5).
 
-        - energy_threshold (float): threshold for the input RMS sound energy. T-F units with energy lower than this number
-          are considered a background. This helps to filter out silent regions (default = 0.05)
+        - energy_threshold (float): threshold for the input RMS sound energy. T-F units with energy lower than
+          this number are considered a background. This helps to filter out silent regions (default = 0.05)
 
-        - agreement_threshold (float): threshold for the "agreement ratios", or how much T-F units should agree with the
-          T-F unit corresponding to the estimated F0 for the current time frame (default = 0.7)
+        - agreement_threshold (float): threshold for the "agreement ratios", or how much T-F units should agree
+          with the T-F unit corresponding to the estimated F0 for the current time frame (default = 0.7)
 
     """
     import time
@@ -87,8 +84,6 @@ def process(file_name, save_noised=False, noised_file_name=None,
     if "n_channels" not in kwargs.keys(): kwargs["n_channels"] = 128
     if "min_freq" not in kwargs.keys(): kwargs["min_freq"] = MIN_PIANO_KEY_FREQ
     if "max_freq" not in kwargs.keys(): kwargs["max_freq"] = MAX_PIANO_KEY_FREQ
-    if "min_bw" not in kwargs.keys(): kwargs["min_bw"] = 50 * Hz
-    if "max_bw" not in kwargs.keys(): kwargs["max_bw"] = 1 * kHz
     if "w_size_ms" not in kwargs.keys(): kwargs["w_size_ms"] = WINDOW_SIZE_MS
     if "w_overlap_ms" not in kwargs.keys(): kwargs["w_overlap_ms"] = WINDOW_OVERLAP_MS
     if "n_harmonics" not in kwargs.keys(): kwargs["n_harmonics"] = 5
@@ -115,8 +110,6 @@ def process(file_name, save_noised=False, noised_file_name=None,
                                                     n_channels=kwargs["n_channels"],
                                                     min_freq=kwargs["min_freq"],
                                                     max_freq=kwargs["max_freq"],
-                                                    min_bw=kwargs["min_bw"],
-                                                    max_bw=kwargs["max_bw"],
                                                     return_cf=True)
     print("done! ", end="")
 
