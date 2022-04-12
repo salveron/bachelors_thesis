@@ -81,7 +81,7 @@ def compute_cccf(windows):
 
 
 def find_dominant_lags(sacf, samplerate, n_harmonics=5, return_boundaries=False):
-    """Find dominant harmonics in the input summary autocorrelation.
+    """Find dominant lags in the input summary autocorrelation.
 
     :param np.ndarray sacf: Input SACF array
     :param int samplerate: Samplerate of the input sound
@@ -95,6 +95,7 @@ def find_dominant_lags(sacf, samplerate, n_harmonics=5, return_boundaries=False)
     min_lag, max_lag = compute_lag_boundaries(samplerate, n_lags=sacf.shape[1])
 
     # All possible values for n_harmonics harmonics for input SACF
+    # FUTURE: sometimes this doesn't work well for low frequencies
     harmonics = np.vstack([np.arange(min_lag, max_lag // n_harmonics) * harmonic
                            for harmonic in range(1, n_harmonics + 1)]).T
 
