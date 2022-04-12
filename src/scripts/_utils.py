@@ -3,6 +3,8 @@
 #######################################################
 """Contains constants and utility functions."""
 
+import os
+
 from brian2 import *  # Imports everything from numpy and matplotlib too
 from brian2hears import *
 import skimage
@@ -75,7 +77,7 @@ def _decrease_time_resolution(cochleagram, samplerate):
     return rms
 
 
-def plot_process_results(cochleagram, ibm, masked_cochleagram, samplerate, figtitle="Results", figsize=(16, 4),
+def plot_process_results(cochleagram, ibm, masked_cochleagram, samplerate, figtitle="Results", figsize=(14, 4),
                          save_figure=False, save_file_path=None):
     """Plot the results of the all-at-once function.
 
@@ -92,31 +94,31 @@ def plot_process_results(cochleagram, ibm, masked_cochleagram, samplerate, figti
     fig, (ax1, ax2, ax3) = subplots(ncols=3, figsize=figsize, sharey="row")
     subplots_adjust(wspace=0.15)
 
-    fig.suptitle(figtitle)
+    fig.suptitle(figtitle, fontsize=14)
 
     rms = _decrease_time_resolution(cochleagram, samplerate)
     ax1.imshow(rms, origin='lower', aspect='auto', vmin=0, interpolation="none",
                extent=[0, cochleagram.shape[1] / samplerate, 0, cochleagram.shape[0]])
-    ax1.set_title("Cochleagram")
-    ax1.set_xlabel("Time (s)")
-    ax1.set_ylabel("Frequency channels")
+    ax1.set_title("Cochleagram", fontsize=14)
+    ax1.set_xlabel("Time (s)", fontsize=14)
+    ax1.set_ylabel("Frequency channels", fontsize=14)
 
     ax2.imshow(ibm.T, origin='lower', aspect='auto', vmin=0, interpolation="none", cmap="Greys")
-    ax2.set_title("IBM estimate")
-    ax2.set_xlabel("Time frames")
-    ax2.set_ylabel("Frequency channels")
+    ax2.set_title("IBM estimate", fontsize=14)
+    ax2.set_xlabel("Time frames", fontsize=14)
+    ax2.set_ylabel("Frequency channels", fontsize=14)
 
     rms = _decrease_time_resolution(masked_cochleagram, samplerate)
     ax3.imshow(rms, origin='lower', aspect='auto', vmin=0, interpolation="none")
-    ax3.set_title("Masked cochleagram")
-    ax3.set_xlabel("Time (s)")
-    ax3.set_ylabel("Frequency channels")
+    ax3.set_title("Masked cochleagram", fontsize=14)
+    ax3.set_xlabel("Time (s)", fontsize=14)
+    ax3.set_ylabel("Frequency channels", fontsize=14)
 
     tight_layout()
 
     if save_figure:
         if save_file_path is None:
-            save_file_path = "process_results.jpg"
+            save_file_path = os.path.join("..", "data", "output", "process_results.jpg")
         fig.savefig(save_file_path, bbox_inches='tight', dpi=384)
 
     show()

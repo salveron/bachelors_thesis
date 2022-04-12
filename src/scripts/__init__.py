@@ -41,7 +41,7 @@ from _utils import (MIN_PIANO_KEY_FREQ,
 
 def process(file_name, save_noised=False, noised_file_name=None,
             save_resynth=False, resynth_file_name=None,
-            save_plot=False, plot_file_name="Results", plot_title=None, **kwargs):
+            save_plot=False, plot_file_path=None, plot_title=None, **kwargs):
     """All-at-once function made for experiments.
 
     :param str file_name: Name of the input .wav file from the data folder
@@ -50,7 +50,7 @@ def process(file_name, save_noised=False, noised_file_name=None,
     :param bool save_resynth: If True, saves the resynthesized sound to the output folder
     :param Optional[str] resynth_file_name: Name of the save file for the resynthesized sound
     :param bool save_plot: If True, saves the resulting plot to the output folder
-    :param Optional[str] plot_file_name: Name of the save file for the resulting plot
+    :param Optional[str] plot_file_path: Name of the save file for the resulting plot
     :param str plot_title: Title of the plot
     :param dict kwargs: Dictionary with parameters for the algorithms. Described below in more detail.
 
@@ -81,8 +81,6 @@ def process(file_name, save_noised=False, noised_file_name=None,
 
     """
     import time
-    import os
-
     time_start = time.time()
 
     if "n_channels" not in kwargs.keys(): kwargs["n_channels"] = 128
@@ -178,7 +176,7 @@ def process(file_name, save_noised=False, noised_file_name=None,
                          masked_cochleagram,
                          samplerate=sound.samplerate,
                          save_figure=save_plot,
-                         save_file_path=os.path.join("..", "data", "output", plot_file_name),
+                         save_file_path=plot_file_path,
                          figtitle=plot_title)
 
     # Print execution time
