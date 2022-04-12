@@ -44,13 +44,13 @@ def compute_cochleagram(sound, n_channels, min_freq=MIN_PIANO_KEY_FREQ, max_freq
         return cochleagram
 
 
-def plot_cochleagram(cochleagram, samplerate, plot_title="Cochleagram",
+def plot_cochleagram(cochleagram, samplerate, figtitle="Cochleagram",
                      figsize=(12, 7), save_figure=False, save_file_path=None):
     """Plot a cochleagram.
 
     :param np.ndarray cochleagram: Input cochleagram
     :param int samplerate: Samplerate of the input sound
-    :param str plot_title: Title of the plot
+    :param str figtitle: Title of the plot
     :param tuple figsize: Size of the matplotlib figure
     :param bool save_figure: If True, saves the resulting plot to a JPG file
     :param Optional[str] save_file_path: Path to the output file
@@ -63,7 +63,7 @@ def plot_cochleagram(cochleagram, samplerate, plot_title="Cochleagram",
                  extent=[0, cochleagram.shape[1] / samplerate, 0, cochleagram.shape[0]])
     colorbar(img)
 
-    title(plot_title, fontsize=14)
+    title(figtitle, fontsize=14)
     xlabel("Time (s)", fontsize=14)
     ylabel("Frequency Channels", fontsize=14)
 

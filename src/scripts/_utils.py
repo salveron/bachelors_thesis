@@ -75,18 +75,24 @@ def _decrease_time_resolution(cochleagram, samplerate):
     return rms
 
 
-def plot_process_results(cochleagram, ibm, masked_cochleagram, samplerate, figsize=(16, 4)):
+def plot_process_results(cochleagram, ibm, masked_cochleagram, samplerate, figtitle="Results", figsize=(16, 4),
+                         save_figure=False, save_file_path=None):
     """Plot the results of the all-at-once function.
 
     :param np.ndarray cochleagram: Input cochleagram
     :param np.ndarray ibm: Estimated ideal binary mask
     :param np.ndarray masked_cochleagram: Masked cochleagram
     :param int samplerate: Samplerate of the input sound
+    :param str figtitle: Title of the plot
     :param tuple figsize: Size of the matplotlib figure
+    :param bool save_figure: If True, saves the resulting plot to a JPG file
+    :param Optional[str] save_file_path: Path to the output file
 
     """
     fig, (ax1, ax2, ax3) = subplots(ncols=3, figsize=figsize, sharey="row")
     subplots_adjust(wspace=0.15)
+
+    fig.suptitle(figtitle)
 
     rms = _decrease_time_resolution(cochleagram, samplerate)
     ax1.imshow(rms, origin='lower', aspect='auto', vmin=0, interpolation="none",
@@ -107,4 +113,10 @@ def plot_process_results(cochleagram, ibm, masked_cochleagram, samplerate, figsi
     ax3.set_ylabel("Frequency channels")
 
     tight_layout()
+
+    if save_figure:
+        if save_file_path is None:
+            save_file_path = "process_results.jpg"
+        fig.savefig(save_file_path, bbox_inches='tight', dpi=384)
+
     show()

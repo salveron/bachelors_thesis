@@ -18,7 +18,7 @@ from _feature_extraction import (compute_correlogram,
                                  find_dominant_lags,
                                  find_fundamental_frequencies,
                                  compute_energy_values,
-                                 compute_agreement_ratios,
+                                 compute_agreement_values,
                                  plot_correlogram)
 
 from _segmentation_and_grouping import (form_time_segments,
@@ -40,7 +40,8 @@ from _utils import (MIN_PIANO_KEY_FREQ,
 
 
 def process(file_name, save_noised=False, noised_file_name=None,
-            save_resynth=False, resynth_file_name=None, **kwargs):
+            save_resynth=False, resynth_file_name=None,
+            save_plot=False, plot_file_name="Results", plot_title=None, **kwargs):
     """All-at-once function made for experiments.
 
     :param str file_name: Name of the input .wav file from the data folder
@@ -48,6 +49,9 @@ def process(file_name, save_noised=False, noised_file_name=None,
     :param Optional[str] noised_file_name: Name of the save file for the noised sound
     :param bool save_resynth: If True, saves the resynthesized sound to the output folder
     :param Optional[str] resynth_file_name: Name of the save file for the resynthesized sound
+    :param bool save_plot: If True, saves the resulting plot to the output folder
+    :param Optional[str] plot_file_name: Name of the save file for the resulting plot
+    :param str plot_title: Title of the plot
     :param dict kwargs: Dictionary with parameters for the algorithms. Described below in more detail.
 
     If some parameters are missing in the input dictionary, they will be set to default values. Here is the list
@@ -77,7 +81,7 @@ def process(file_name, save_noised=False, noised_file_name=None,
 
     """
     import time
-    from brian2 import Hz, kHz, second
+    import os
 
     time_start = time.time()
 
@@ -172,7 +176,10 @@ def process(file_name, save_noised=False, noised_file_name=None,
     plot_process_results(cochleagram,
                          ibm,
                          masked_cochleagram,
-                         samplerate=sound.samplerate)
+                         samplerate=sound.samplerate,
+                         save_figure=save_plot,
+                         save_file_path=os.path.join("..", "data", "output", plot_file_name),
+                         figtitle=plot_title)
 
     # Print execution time
     print(f"Execution time: {(time.time() - time_start)} s")

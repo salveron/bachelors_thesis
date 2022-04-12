@@ -135,11 +135,13 @@ def compute_energy_values(windows):
     :rtype: np.ndarray
 
     """
-    return np.apply_along_axis(lambda vec: np.sqrt(np.mean(np.square(vec))), 2, windows)
+    return np.apply_along_axis(lambda vec: vec.mean(), 2, windows)
 
 
-def compute_agreement_ratios(correlogram, fundamental_lags, samplerate):
-    """Compute ratios of how much every T-F unit corresponds with the estimated F0 for the current time frame.
+def compute_agreement_values(correlogram, fundamental_lags, samplerate):
+    """Compute estimates of how much every T-F unit corresponds with the estimated F0 for the current time frame.
+
+    The values are taken from the correlogram and normalized by the max value for the given T-F unit.
 
     :param np.ndarray correlogram: Input correlogram
     :param np.ndarray fundamental_lags: Lag values for estimated fundamental frequencies for each time frame

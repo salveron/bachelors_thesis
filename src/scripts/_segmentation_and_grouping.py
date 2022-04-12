@@ -11,7 +11,7 @@ from _feature_extraction import (compute_correlogram,
                                  compute_twcf,
                                  compute_cccf,
                                  compute_energy_values,
-                                 compute_agreement_ratios)
+                                 compute_agreement_values)
 
 
 def form_time_segments(correlogram, twcf_threshold):
@@ -95,7 +95,7 @@ def compute_ibm(windows, fundamental_lags, samplerate, energy_threshold, agreeme
         correlogram = compute_correlogram(windows)
 
     energy_values = compute_energy_values(windows)
-    agreement_ratios = compute_agreement_ratios(correlogram, fundamental_lags, samplerate)
+    agreement_ratios = compute_agreement_values(correlogram, fundamental_lags, samplerate)
 
     # Ideal binary mask is formed from T-F units with high RMS sound energy and high agreement ratios
     # with the estimated fundamental frequencies
@@ -139,34 +139,42 @@ def plot_segmentation(correlogram, twcf_threshold, cccf_threshold, figsize=(14, 
     show()
 
 
-def plot_ibm(ibm, energy_values, agreement_ratios, figsize=(12, 12)):
+def plot_ibm(ibm, energy_values, agreement_ratios, figsize=(12, 11),
+             save_figure=False, save_file_path=None):
     """Plot an ideal binary mask along with its components.
 
     :param np.ndarray ibm: Input IBM
     :param np.ndarray energy_values: Energy values for the input IBM
     :param np.ndarray agreement_ratios: Agreement ratios for the input IBM
     :param tuple figsize: Size of the matplotlib figure
+    :param bool save_figure: If True, saves the resulting plot to a JPG file
+    :param Optional[str] save_file_path: Path to the output file
 
     """
-    figure(figsize=figsize)
-    grid = GridSpec(2, 2, wspace=0.25, hspace=0.25, height_ratios=[1, 2])
+    fig = figure(figsize=figsize)
+    gr = GridSpec(2, 2, wspace=0.25, hspace=0.15, height_ratios=[1, 2])
 
-    ax1 = subplot(grid[0, 0])
+    ax1 = subplot(gr[0, 0])
     ax1.imshow(energy_values.T, origin='lower', aspect='auto', vmin=0, interpolation="none", cmap="Greys")
     ax1.set_title("Energy values")
     ax1.set_xlabel("Time frames")
     ax1.set_ylabel("Frequency channels")
 
-    ax2 = subplot(grid[0, 1])
+    ax2 = subplot(gr[0, 1])
     ax2.imshow(agreement_ratios.T, origin='lower', aspect='auto', vmin=0, interpolation="none", cmap="Greys")
-    ax2.set_title("Agreement ratios")
+    ax2.set_title("Agreement values")
     ax2.set_xlabel("Time frames")
     ax2.set_ylabel("Frequency channels")
 
-    ax3 = subplot(grid[1, :])
+    ax3 = subplot(gr[1, :])
     ax3.imshow(ibm.T, origin='lower', aspect='auto', vmin=0, interpolation="none", cmap="Greys")
     ax3.set_title("IBM estimate")
     ax3.set_xlabel("Time frames")
     ax3.set_ylabel("Frequency channels")
+
+    if save_figure:
+        if save_file_path is None:
+            save_file_path = "IBM.jpg"
+        fig.savefig(save_file_path, bbox_inches='tight', dpi=384)
 
     show()

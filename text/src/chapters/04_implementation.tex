@@ -22,11 +22,13 @@ where $b=1.019$ and the ERB function was the same as in equation \ref{equation:E
 		\centering
 		\includegraphics[width=\linewidth]{include/cochleagram_example_C-major}
 		\caption{}
+		\label{img:cochleagram_example_C-major}
 	\end{subfigure}%
 	\begin{subfigure}{0.5\textwidth}
 		\centering
 		\includegraphics[width=\linewidth]{include/cochleagram_example_A-major}
 		\caption{}
+		\label{img:cochleagram_example_A-major}
 	\end{subfigure}
 	\caption[Comparison of cochleagrams for C-major and A-major scales]{Cochleagrams for C-major \textbf{(a)} and A-major \textbf{(b)} scales. The ascending and descending note progressions and the note harmonics are clearly visible in both cases, as well as the difference in fundamental frequency between the tones (all notes from A-major scale are higher).}
 	\label{img:cochleagram_example}
@@ -53,5 +55,30 @@ Finally, the SACF function was used to estimate the fundamental frequencies of t
 
 \section{Masking}
 
+The segmentation-and-grouping stage involved the task of estimating the ideal binary mask for the cochleagram computed in the first part. This step was done by combining two matrices described below.\\
+
+The first matrix playing a big role in the resulting IBM was an "energy mask". This mask helped to emphasize the regions of the cochleagram that contained high sound energy by comparing the mean value of the samples in a T-F unit with a threshold. As a result, silent regions of the cochleagram --- like the ones that usually appear at the beginning of a recording --- were addressed and considered as ones not associated with the target sounds (the resulting binary energy mask contained zeroes for such T-F units). The default value for the threshold was chosen to be $0.05$.\\
+
+The second matrix was an "agreement values mask". This one was extracted from the correlo\-gram by taking values at the estimated "dominant" lags. These measures technically showed which frequency channels contained the harmonics of the fundamental frequency, and which did not. The values were also normalized by the maximum value of the autocorrelation for the T-F unit (which was equal to~1 in most cases). To make a binary decision about the measures of agreement, a threshold was used, and it was set to $0.7$ by default.\\
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=\textwidth]{include/ibm_example}
+	\caption[An example of an ideal binary mask for C-major scale]{An example of an ideal binary mask for C-major scale played fast. The mask was estimated from combining two other masks computed by comparing sound energy and agreement values with thresholds.}
+	\label{img:ibm_example}
+\end{figure}
+
+Finally, an ideal binary mask was estimated by combining the two above-mentioned masks using the logical "and" operation. In the end, the values in the resulting IBM were set to~1 for T-F units that had mean sound energy higher than the threshold and were in agreement with the estimated fundamental frequency. An example of energy and agreement matrices and the corresponding IBM for C-major scale is shown on figure \ref{img:ibm_example}.\\
+
+The next step was to apply the estimated mask to a cochleagram. This was done by rebuilding the cochleagram from its windowed representation and multiplying the samples in the windows by the values from the mask. The result for C-major scale is shown on figure \ref{img:masked_cochleagram_example}.\\
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.8\textwidth]{include/masked_cochleagram_example}
+	\caption[A masked cochleagram for C-major scale]{The cochleagram from figure \ref{img:cochleagram_example_C-major} masked by the IBM shown on figure \ref{img:ibm_example}. The main energy regions corresponding to distinct notes were kept, while the background sounds were filtered out. The ascending and descending note progressions as well as higher harmonics of the notes are also clearly visible after the masking.}
+	\label{img:masked_cochleagram_example}
+\end{figure}
+
+As it can be seen from the approach chosen for estimating the IBM, Bregman's references to ASA as to a two-stage process were not addressed. The segmentation-and-grouping stage was implemented by working with all T-F units at once, without firstly segregating them into segments and then grouping the segments together based on the grouping cues. As a part of future work it is planned to give this stage more scientific attention and hopefully receive better outcomes.\\
 
 
