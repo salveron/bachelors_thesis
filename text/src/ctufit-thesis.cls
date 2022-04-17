@@ -451,7 +451,7 @@
 
 \vskip 0.5cm
 
-{\noindent\color{heading}\bfseries Klíčová slova\hspace{1em}}{\thectufitklicovaslova}
+{\noindent\color{heading}\bfseries Keywords\hspace{1em}}{\thectufitkeywords}
 
 \vskip 1cm
 
@@ -461,7 +461,7 @@
 
 \vskip 0.5cm
 
-{\noindent\color{heading}\bfseries Keywords\hspace{1em}}{\thectufitkeywords}
+{\noindent\color{heading}\bfseries Klíčová slova\hspace{1em}}{\thectufitklicovaslova}
 \end{abstractpage}
 }
 

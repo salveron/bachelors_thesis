@@ -6,18 +6,10 @@ In machine perception --- specifically in machine hearing --- a related concept 
 
 The main objective for this thesis is to describe the principles and goals of CASA, existing applications and approaches. Another objective is to practically apply the theoretical knowledge by implementing a simple CASA system to separate monophonic music from noise and experimenting with it. But before all of this, since this thesis is made for an IT-oriented audience, it is needed to make a brief introduction to the underlying physics and biology.\\
 
-Thus, the thesis is structured as follows:
+The thesis is split into four large chapters. Chapter \ref{chapter:theory} is made to provide theoretical background for computational auditory scene analysis and will gather related knowledge from different fields of science: physics, biology and math. Physical background is needed for some basic understanding of what sound actually is. Moreover, since the implemented system from the practical part aims to segregate music from noise, a special attention there will be given to harmonic sounds and pitch perception. Next, biological background theory will introduce the reader to the mechanisms in the human ear that CASA systems try to mimic. There, auditory scene analysis according to Bregman will be described as well. The following section dedicated to the related math will make an introduction to the field of digital signal processing, including a conversation about digital filters and filterbanks. And finally, background theory for computational auditory scene analysis will follow, giving a description of its main principles, goals and applications, along with an overview of major works in the field.\\
 
-\begin{description}
-	\item Firstly, physical background theory will be provided, including an introduction to what a~sound is. Since the implemented system from the practical part aims to segregate music from noise, a special focus in this part will be made on describing harmonic sounds and pitch perception.
+Then, to make a step closer to the actual implementation, a chapter dedicated to the metho\-dology will follow. Chapter \ref{chapter:methodology} will firstly provide an overview of the mathematical concepts used there, and then will give a detailed description of the architecture of a typical CASA system.\\
 
-	\item Secondly, having in mind that CASA tries to mimic the human auditory system, a brief introduction to the biological structure of the human ear will be made. Here, auditory scene analysis according to Bregman will be introduced too.
-	
-	\item Next, to cover the math in the implementation part, the basics of digital sound processing will be described. The related mathematical principles and functions used during the implementation will also be given some attention.
+Next, chapter \ref{chapter:implementation} will describe the system implemented for this thesis. There, a conversation about the selected algorithms and methods will take place, along with their input parameters. Each stage of the architecture described previously will be given a special attention.\\
 
-	\item In the following chapter, having all the related theory in mind, an introduction to the main principles and goals of CASA will be made, along with an overview of its applications and selected models.
-
-	\item Then, in the practical part, the focus will be made on describing the implementation of specific parts of the CASA system built for this thesis (see attached medium).
-
-	\item Finally, an overview of the experiments made to test the implemented system will be provided.
-\end{description}
+The final chapter (chapter \ref{chapter:experiments}) will gather information about the experiments made to test the implemented system, along with the observed results.\\
