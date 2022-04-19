@@ -38,21 +38,20 @@ def load_sound(file_name, full_path=False, monaural=True):
     return sound
 
 
-def save_sound(sound, file_name, full_path=False):
+def save_sound(sound, file_path=None):
     """Save a sound to a .wav file.
 
     :param Sound sound: Sound to save
-    :param str file_name: Name of the input .wav file from the data folder
-    :param bool full_path: If True, file_name is considered to be a valid relative path to the file
+    :param Optional[str] file_path: Path to the output file
 
     """
-    if not full_path:
-        file_name = os.path.join("..", "data", "output", file_name)
+    if file_path is None:
+        file_path = os.path.join("..", "data", "output", "sound.wav")
 
-    if not file_name.endswith(".wav"):
+    if not file_path.endswith(".wav"):
         raise ValueError("Only .wav files are supported.")
 
-    sound.save(file_name)
+    sound.save(file_path)
 
 
 def add_white_noise(sound, noise_level):

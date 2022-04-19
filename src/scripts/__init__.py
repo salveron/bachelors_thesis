@@ -2,6 +2,7 @@
 # Bachelor's Thesis. Nikita Mortuzaiev, FIT CVUT, 2022
 #######################################################
 """Gathers all functions for the thesis in one place."""
+import warnings
 
 from _sounds import (load_sound,
                      save_sound,
@@ -34,24 +35,37 @@ from _utils import (MIN_PIANO_KEY_FREQ,
                     MAX_PIANO_KEY_FREQ,
                     WINDOW_SIZE_MS,
                     WINDOW_OVERLAP_MS,
+                    load_arr_from_file,
+                    save_arr_to_file,
                     compute_lag_boundaries,
                     apply_windowing,
                     plot_process_results)
 
 
-def process(file_name, save_noised=False, noised_file_name=None,
-            save_resynth=False, resynth_file_name=None,
+def process(file_name, load_ibm_from=None,
+            save_noised=False, noised_file_path=None,
+            save_ibm=False, ibm_file_path=None,
+            save_resynth=False, resynth_file_path=None,
             save_plot=False, plot_file_path=None, plot_title=None, **kwargs):
     """All-at-once function made for experiments.
 
     :param str file_name: Name of the input .wav file from the data folder
-    :param bool save_noised: If True, saves the noised sound to the output folder
-    :param Optional[str] noised_file_name: Name of the save file for the noised sound
-    :param bool save_resynth: If True, saves the resynthesized sound to the output folder
-    :param Optional[str] resynth_file_name: Name of the save file for the resynthesized sound
-    :param bool save_plot: If True, saves the resulting plot to the output folder
-    :param Optional[str] plot_file_path: Name of the save file for the resulting plot
+    :param Optional[str] load_ibm_from: If provided, loads a precomputed IBM from the specified file
+
+    :param bool save_noised: If True, saves the noised sound to the specified folder
+    :param Optional[str] noised_file_path: Path to the save file for the noised sound
+
+    :param bool save_ibm: If True, saves the resulting ideal binary mask to the specified folder
+    :param Optional[str] ibm_file_path: Path to the save file for the resulting plot
+
+    :param bool save_resynth: If True, saves the resynthesized sound to the specified folder
+    :param Optional[str] resynth_file_path: Path to the save file for the resynthesized sound
+
+    :param bool save_plot: If True, saves the resulting plot to the specified folder
+    :param Optional[str] plot_file_path: Path to the save file for the resulting plot
+
     :param str plot_title: Title of the plot
+
     :param dict kwargs: Dictionary with parameters for the algorithms. Described below in more detail.
 
     If some parameters are missing in the input dictionary, they will be set to default values. Here is the list
@@ -80,6 +94,7 @@ def process(file_name, save_noised=False, noised_file_name=None,
           with the T-F unit corresponding to the estimated F0 for the current time frame (default = 0.7)
 
     """
+    import os
     import time
     time_start = time.time()
 
@@ -102,9 +117,9 @@ def process(file_name, save_noised=False, noised_file_name=None,
 
     # Save the noised sound
     if save_noised:
-        if noised_file_name is None:
-            noised_file_name = base_name + " Noised." + extension
-        save_sound(sound, noised_file_name)
+        if noised_file_path is None:
+            noised_file_path = os.path.join("..", "data", "output", base_name + " Noised." + extension)
+        save_sound(sound, file_path=noised_file_path)
 
     # Compute cochleagram
     print("Cochleagram... ", end="")
@@ -115,41 +130,59 @@ def process(file_name, save_noised=False, noised_file_name=None,
                                                     return_cf=True)
     print("done! ", end="")
 
-    # Apply windowing (rectangular)
-    print("Windowing... ", end="")
-    windows = apply_windowing(cochleagram,
-                              samplerate=sound.samplerate,
-                              w_size_ms=kwargs["w_size_ms"],
-                              w_overlap_ms=kwargs["w_overlap_ms"])
-    print("done! ", end="")
+    # Compute IBM, if not loading an already computed one
+    if load_ibm_from is None:
 
-    # Compute correlogram
-    print("Correlogram... ", end="")
-    correlogram = compute_correlogram(windows,
-                                      n_lags=(kwargs["n_lags"]
-                                              if "n_lags" in kwargs.keys()
-                                              else None))
-    print("done! ", end="")
+        # Apply windowing (rectangular)
+        print("Windowing... ", end="")
+        windows = apply_windowing(cochleagram,
+                                  samplerate=sound.samplerate,
+                                  w_size_ms=kwargs["w_size_ms"],
+                                  w_overlap_ms=kwargs["w_overlap_ms"])
+        print("done! ", end="")
 
-    # Summary ACF
-    sacf = compute_sacf(correlogram)
+        # Compute correlogram
+        print("Correlogram... ", end="")
+        correlogram = compute_correlogram(windows,
+                                          n_lags=(kwargs["n_lags"]
+                                                  if "n_lags" in kwargs.keys()
+                                                  else None))
+        print("done! ", end="")
 
-    # Estimates for F0 and their corresponding lags
-    print("F0 estimates... ", end="")
-    fundamental_lags, fundamental_freqs = find_fundamental_frequencies(sacf,
-                                                                       samplerate=sound.samplerate,
-                                                                       n_harmonics=kwargs["n_harmonics"])
-    print("done! ", end="")
+        # Summary ACF
+        sacf = compute_sacf(correlogram)
 
-    # Ideal binary mask estimate
-    print("IBM... ", end="")
-    ibm = compute_ibm(windows,
-                      fundamental_lags,
-                      samplerate=sound.samplerate,
-                      energy_threshold=kwargs["energy_threshold"],
-                      agreement_threshold=kwargs["agreement_threshold"],
-                      correlogram=correlogram)
-    print("done! ", end="")
+        # Estimates for F0 and their corresponding lags
+        print("F0 estimates... ", end="")
+        fundamental_lags, fundamental_freqs = find_fundamental_frequencies(sacf,
+                                                                           samplerate=sound.samplerate,
+                                                                           n_harmonics=kwargs["n_harmonics"])
+        print("done! ", end="")
+
+        # Ideal binary mask estimate
+        print("IBM... ", end="")
+        ibm = compute_ibm(windows,
+                          fundamental_lags,
+                          samplerate=sound.samplerate,
+                          energy_threshold=kwargs["energy_threshold"],
+                          agreement_threshold=kwargs["agreement_threshold"],
+                          correlogram=correlogram)
+        print("done! ", end="")
+
+        # Save the IBM to a file
+        if save_ibm:
+            save_arr_to_file(ibm, file_path=ibm_file_path)
+
+    # Use the precomputed IBM, if provided
+    else:
+        if save_ibm:
+            warnings.warn("The IBM was loaded from an external file."
+                          "The save_ibm and ibm_file_path arguments are ignored.")
+
+        print(f"Loading IBM from \"{load_ibm_from}\"... ", end="")
+        ibm = load_arr_from_file(load_ibm_from,
+                                 full_path=True)
+        print("done! ", end="")
 
     # Mask the cochleagram
     print("Masking... ", end="")
@@ -166,9 +199,9 @@ def process(file_name, save_noised=False, noised_file_name=None,
         resynth = resynthesize_sound(masked_cochleagram, samplerate=sound.samplerate)
         print("done! ", end="")
 
-        if resynth_file_name is None:
-            resynth_file_name = base_name + " Resynth." + extension
-        save_sound(resynth, resynth_file_name)
+        if resynth_file_path is None:
+            resynth_file_path = os.path.join("..", "data", "output", base_name + " Resynth." + extension)
+        save_sound(resynth, file_path=resynth_file_path)
 
     # Plot cochleagram, IBM and masked cochleagram
     plot_process_results(cochleagram,

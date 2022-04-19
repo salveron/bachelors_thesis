@@ -16,6 +16,37 @@ WINDOW_SIZE_MS = 20 * msecond
 WINDOW_OVERLAP_MS = 10 * msecond
 
 
+def load_arr_from_file(file_name, full_path=False):
+    """Load a numpy array from a file.
+
+    :param str file_name: Name of the input .npy file from the data folder
+    :param bool full_path: If True, file_name is considered to be a valid relative path to the file
+    :returns: Loaded array
+    :rtype: np.ndarray
+
+    """
+    if not full_path:
+        file_name = os.path.join("..", "data", "output", file_name)
+
+    if not file_name.endswith(".npy"):
+        raise ValueError("Only .npy files are supported.")
+
+    return np.load(file_name, allow_pickle=True)
+
+
+def save_arr_to_file(arr, file_path=None):
+    """Save a numpy array to a file.
+
+    :param np.ndarray arr: Array to save
+    :param Optional[str] file_path: Path to the output file
+
+    """
+    if file_path is None:
+        file_path = os.path.join("..", "data", "output", "ibm.npy")
+
+    np.save(file_path, arr, allow_pickle=True)
+
+
 def compute_lag_boundaries(samplerate, n_lags=None, min_freq=MIN_PIANO_KEY_FREQ, max_freq=MAX_PIANO_KEY_FREQ):
     """Compute min and max values for lags for the given samplerate.
 
