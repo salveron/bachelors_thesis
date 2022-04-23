@@ -9,7 +9,7 @@ import numpy as np
 from brian2hears import Sound
 
 
-def load_sound(file_name, full_path=False, monaural=True):
+def load_sound(file_name, full_path=False, monaural=True, print_stats=True):
     """Load a sound from a .wav file.
 
     For this thesis, sounds are monaural. For binaural input sounds, only left channel is used.
@@ -17,6 +17,7 @@ def load_sound(file_name, full_path=False, monaural=True):
     :param str file_name: Name of the input .wav file from the data folder
     :param bool full_path: If True, file_name is considered to be a valid relative path to the file
     :param bool monaural: If True, only left channel is used as a result
+    :param bool print_stats: If True, print basic stats about the loaded sound
     :returns: Loaded sound
     :rtype: Sound
 
@@ -32,8 +33,9 @@ def load_sound(file_name, full_path=False, monaural=True):
     if monaural and sound.nchannels == 2:
         sound = sound.left
 
-    print(f"Loaded sound \"{file_name}\"\n"
-          f"Duration: {sound.duration}, samples: {sound.nsamples}, samplerate: {sound.samplerate}")
+    if print_stats:
+        print(f"Loaded sound \"{file_name}\". Duration: {sound.duration}, samples: {sound.nsamples}, "
+              f"samplerate: {sound.samplerate}.")
 
     return sound
 
@@ -75,5 +77,3 @@ def convert_to_binaural(sound):
 
     """
     return Sound(np.hstack([sound.data, sound.data]), sound.samplerate)
-
-

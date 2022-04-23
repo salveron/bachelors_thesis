@@ -2,5 +2,7 @@ numpy
 matplotlib
 scipy
 scikit-image
+sklearn
 statsmodels
+brian2
 brian2hears

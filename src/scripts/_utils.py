@@ -3,11 +3,9 @@
 #######################################################
 """Contains constants and utility functions."""
 
-import os
-
-from brian2 import *  # Imports everything from numpy and matplotlib too
-from brian2hears import *
 import skimage
+from brian2 import *  # Imports everything from os, numpy and matplotlib too
+from brian2hears import *
 
 MIN_PIANO_KEY_FREQ = 27.5 * Hz
 MAX_PIANO_KEY_FREQ = 4.186 * kHz
@@ -26,7 +24,7 @@ def load_arr_from_file(file_name, full_path=False):
 
     """
     if not full_path:
-        file_name = os.path.join("..", "data", "output", file_name)
+        file_name = os.path.join("..", "data", "masks", file_name)
 
     if not file_name.endswith(".npy"):
         raise ValueError("Only .npy files are supported.")
@@ -42,7 +40,7 @@ def save_arr_to_file(arr, file_path=None):
 
     """
     if file_path is None:
-        file_path = os.path.join("..", "data", "output", "ibm.npy")
+        file_path = os.path.join("..", "data", "output", "arr.npy")
 
     np.save(file_path, arr, allow_pickle=True)
 
@@ -97,7 +95,7 @@ def _decrease_time_resolution(cochleagram, samplerate):
     :param np.ndarray cochleagram: Input cochleagram
     :param int samplerate: Samplerate of the input sound
     :returns: Cochleagram for plotting
-    :rtype: tuple
+    :rtype: np.ndarray
 
     """
     windows = apply_windowing(cochleagram, samplerate)
@@ -148,8 +146,6 @@ def plot_process_results(cochleagram, ibm, masked_cochleagram, samplerate, figti
     tight_layout()
 
     if save_figure:
-        if save_file_path is None:
-            save_file_path = os.path.join("..", "data", "output", "process_results.jpg")
         fig.savefig(save_file_path, bbox_inches='tight', dpi=384)
 
     show()

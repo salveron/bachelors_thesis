@@ -1,7 +1,7 @@
 #######################################################
 # Bachelor's Thesis. Nikita Mortuzaiev, FIT CVUT, 2022
 #######################################################
-"""Contains functions for Segmentation and Grouping."""
+"""Contains functions for the Segmentation and Grouping stage."""
 
 import numpy as np
 

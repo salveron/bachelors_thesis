@@ -2,7 +2,6 @@
 # Bachelor's Thesis. Nikita Mortuzaiev, FIT CVUT, 2022
 #######################################################
 """Gathers all functions for the thesis in one place."""
-import warnings
 
 from _sounds import (load_sound,
                      save_sound,
@@ -28,8 +27,16 @@ from _segmentation_and_grouping import (form_time_segments,
                                         plot_segmentation,
                                         plot_ibm)
 
-from _resynthesis import (apply_mask,
-                          resynthesize_sound)
+from _resynthesis import resynthesize_sound
+
+from _evaluation import (apply_mask,
+                         prepare_clean_data,
+                         prepare_noised_data,
+                         create_dataset,
+                         load_dataset,
+                         train_classifier,
+                         make_prediction,
+                         compute_model_accuracy)
 
 from _utils import (MIN_PIANO_KEY_FREQ,
                     MAX_PIANO_KEY_FREQ,
@@ -46,7 +53,8 @@ def process(file_name, load_ibm_from=None,
             save_noised=False, noised_file_path=None,
             save_ibm=False, ibm_file_path=None,
             save_resynth=False, resynth_file_path=None,
-            save_plot=False, plot_file_path=None, plot_title=None, **kwargs):
+            draw_plot=True, plot_title=None,
+            save_plot=False, plot_file_path=None, **kwargs):
     """All-at-once function made for experiments.
 
     :param str file_name: Name of the input .wav file from the data folder
@@ -61,12 +69,15 @@ def process(file_name, load_ibm_from=None,
     :param bool save_resynth: If True, saves the resynthesized sound to the specified folder
     :param Optional[str] resynth_file_path: Path to the save file for the resynthesized sound
 
+    :param bool draw_plot: If True, draw a plot showing the results
+    :param str plot_title: Title of the plot
+
     :param bool save_plot: If True, saves the resulting plot to the specified folder
     :param Optional[str] plot_file_path: Path to the save file for the resulting plot
 
-    :param str plot_title: Title of the plot
-
     :param dict kwargs: Dictionary with parameters for the algorithms. Described below in more detail.
+    :returns: Loaded input sound, the corresponding cochleagram and loaded/computed IBM
+    :rtype: tuple
 
     If some parameters are missing in the input dictionary, they will be set to default values. Here is the list
     of parameters to experiment with:
@@ -94,8 +105,9 @@ def process(file_name, load_ibm_from=None,
           with the T-F unit corresponding to the estimated F0 for the current time frame (default = 0.7)
 
     """
-    import os
+    from os.path import join as pjoin
     import time
+    import warnings
     time_start = time.time()
 
     if "n_channels" not in kwargs.keys(): kwargs["n_channels"] = 128
@@ -118,7 +130,7 @@ def process(file_name, load_ibm_from=None,
     # Save the noised sound
     if save_noised:
         if noised_file_path is None:
-            noised_file_path = os.path.join("..", "data", "output", base_name + " Noised." + extension)
+            noised_file_path = pjoin("..", "data", "output", base_name + " Noised." + extension)
         save_sound(sound, file_path=noised_file_path)
 
     # Compute cochleagram
@@ -144,9 +156,7 @@ def process(file_name, load_ibm_from=None,
         # Compute correlogram
         print("Correlogram... ", end="")
         correlogram = compute_correlogram(windows,
-                                          n_lags=(kwargs["n_lags"]
-                                                  if "n_lags" in kwargs.keys()
-                                                  else None))
+                                          n_lags=(kwargs["n_lags"] if "n_lags" in kwargs.keys() else None))
         print("done! ", end="")
 
         # Summary ACF
@@ -171,6 +181,8 @@ def process(file_name, load_ibm_from=None,
 
         # Save the IBM to a file
         if save_ibm:
+            if ibm_file_path is None:
+                ibm_file_path = pjoin("..", "data", "masks", base_name + ".npy")
             save_arr_to_file(ibm, file_path=ibm_file_path)
 
     # Use the precomputed IBM, if provided
@@ -180,18 +192,18 @@ def process(file_name, load_ibm_from=None,
                           "The save_ibm and ibm_file_path arguments are ignored.")
 
         print(f"Loading IBM from \"{load_ibm_from}\"... ", end="")
-        ibm = load_arr_from_file(load_ibm_from,
-                                 full_path=True)
+        ibm = load_arr_from_file(load_ibm_from, full_path=True)
         print("done! ", end="")
 
     # Mask the cochleagram
-    print("Masking... ", end="")
-    masked_cochleagram = apply_mask(cochleagram,
-                                    ibm,
-                                    samplerate=sound.samplerate,
-                                    w_size_ms=kwargs["w_size_ms"],
-                                    w_overlap_ms=kwargs["w_overlap_ms"])
-    print("done! ", end="")
+    if save_resynth or draw_plot:
+        print("Masking... ", end="")
+        masked_cochleagram = apply_mask(cochleagram,
+                                        ibm,
+                                        samplerate=sound.samplerate,
+                                        w_size_ms=kwargs["w_size_ms"],
+                                        w_overlap_ms=kwargs["w_overlap_ms"])
+        print("done! ", end="")
 
     # Resynthesize the sound
     if save_resynth:
@@ -200,17 +212,53 @@ def process(file_name, load_ibm_from=None,
         print("done! ", end="")
 
         if resynth_file_path is None:
-            resynth_file_path = os.path.join("..", "data", "output", base_name + " Resynth." + extension)
+            resynth_file_path = pjoin("..", "data", "output", base_name + " Resynth." + extension)
         save_sound(resynth, file_path=resynth_file_path)
 
     # Plot cochleagram, IBM and masked cochleagram
-    plot_process_results(cochleagram,
-                         ibm,
-                         masked_cochleagram,
-                         samplerate=sound.samplerate,
-                         save_figure=save_plot,
-                         save_file_path=plot_file_path,
-                         figtitle=plot_title)
+    if draw_plot:
+        if plot_file_path is None:
+            plot_file_path = pjoin("..", "data", "output", base_name + " Plot.jpg")
+
+        plot_process_results(cochleagram,
+                             ibm,
+                             masked_cochleagram,
+                             samplerate=sound.samplerate,
+                             save_figure=save_plot,
+                             save_file_path=plot_file_path,
+                             figtitle=plot_title)
 
     # Print execution time
-    print(f"Execution time: {(time.time() - time_start)} s")
+    print(f"\nExecution time: {(time.time() - time_start)} s")
+
+    return sound, cochleagram, ibm
+
+
+def process_all(file_names, **kwargs):
+    """Process all files.
+
+    :param list[str] file_names: Names of the input .wav files from the data folder
+    :param dict kwargs: Keyword arguments for the process() function
+    :returns: Loaded input sounds, the corresponding cochleagrams and loaded/computed IBMs
+    :rtype: tuple
+
+    For a description of supported keyword arguments, refer to the process() function above.
+
+    """
+    import time
+
+    sounds, cochleagrams, ibms = [], [], []
+
+    time_start = time.time()
+
+    for file_name in file_names:
+        sound, cochleagram, ibm = process(file_name, **kwargs)
+
+        sounds.append(sound)
+        cochleagrams.append(cochleagram)
+        ibms.append(ibm)
+
+    # Print execution time
+    print(f"All files processed. Overall execution time: {(time.time() - time_start)} s")
+
+    return sounds, cochleagrams, ibms

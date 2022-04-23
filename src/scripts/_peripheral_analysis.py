@@ -1,7 +1,7 @@
 #######################################################
 # Bachelor's Thesis. Nikita Mortuzaiev, FIT CVUT, 2022
 #######################################################
-"""Contains functions to work with Cochleagrams."""
+"""Contains functions for the Peripheral Analysis stage."""
 
 from brian2 import *  # Imports everything from numpy and matplotlib too
 from brian2hears import *
@@ -11,7 +11,7 @@ from _utils import (MIN_PIANO_KEY_FREQ,
                     _decrease_time_resolution)
 
 
-def compute_cochleagram(sound, n_channels, min_freq=MIN_PIANO_KEY_FREQ, max_freq=MAX_PIANO_KEY_FREQ, return_cf=False):
+def compute_cochleagram(sound, n_channels=128, min_freq=MIN_PIANO_KEY_FREQ, max_freq=MAX_PIANO_KEY_FREQ, return_cf=False):
     """Compute a cochleagram from the input sound.
 
     The cochleagram is computed using filters and filterbanks from Brian2Hears library.

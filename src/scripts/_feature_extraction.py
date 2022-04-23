@@ -1,7 +1,7 @@
 #######################################################
 # Bachelor's Thesis. Nikita Mortuzaiev, FIT CVUT, 2022
 #######################################################
-"""Contains functions for Feature Extraction."""
+"""Contains functions for the Feature Extraction stage."""
 
 from brian2 import *  # Imports everything from numpy and matplotlib too
 from brian2hears import *
