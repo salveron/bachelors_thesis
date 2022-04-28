@@ -42,40 +42,41 @@ def compute_sacf(correlogram):
     return correlogram.sum(axis=1)
 
 
-def compute_twcf(windows):
-    """Compute correlation coefficients (Pearson's) between adjacent time windows for the given correlogram.
+def compute_tfcf(correlogram):
+    """Compute correlation coefficients (Pearson's) between adjacent time frames for the given correlogram.
 
-    The correlation is computed for every pair of T-F units adjacent in time in every frequency channel.
+    The correlation is computed for every pair of adjacent time frames in every frequency channel.
 
-    :param windows: Input windows (cochleagram)
-    :returns: Correlation for adjacent time windows
+    :param correlogram: Input correlogram
+    :returns: Correlation for adjacent time frames
     :rtype: np.ndarray
 
     """
-    twcf = np.zeros((windows.shape[0], windows.shape[1]))
+    tfcf = np.zeros((correlogram.shape[0], correlogram.shape[1]))
 
-    for _t, _f in np.ndindex(twcf.shape):
-        if _t + 1 < windows.shape[0]:
-            twcf[_t, _f] = np.corrcoef(windows[_t, _f], windows[_t + 1, _f])[0, 1]
+    for _t, _f in np.ndindex(tfcf.shape):
+        if _t + 1 < correlogram.shape[0]:
+            tfcf[_t, _f] = np.corrcoef(correlogram[_t, _f], correlogram[_t + 1, _f])[0, 1]
 
-    return twcf
+    return tfcf
 
 
-def compute_cccf(windows):
+def compute_cccf(correlogram):
     """Compute cross-channel correlation coefficients (Pearson's) for the given correlogram.
 
-    Cross-channel correlation is computed for every pair of T-F units adjacent in frequency in every time frame.
+    Cross-channel correlation is computed for every pair of adjacent frequency channels in every time frame.
+    Autocorrelation (not cochleagram) is used as an input.
 
-    :param windows: Input windows (cochleagram)
+    :param correlogram: Input correlogram
     :returns: Cross-channel correlation
     :rtype: np.ndarray
 
     """
-    cccf = np.zeros((windows.shape[0], windows.shape[1]))
+    cccf = np.zeros((correlogram.shape[0], correlogram.shape[1]))
 
     for _t, _f in np.ndindex(cccf.shape):
-        if _f + 1 < windows.shape[1]:
-            cccf[_t, _f] = np.corrcoef(windows[_t, _f], windows[_t, _f + 1])[0, 1]
+        if _f + 1 < correlogram.shape[1]:
+            cccf[_t, _f] = np.corrcoef(correlogram[_t, _f], correlogram[_t, _f + 1])[0, 1]
 
     return cccf
 

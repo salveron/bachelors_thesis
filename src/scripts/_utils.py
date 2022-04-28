@@ -140,7 +140,7 @@ def plot_process_results(cochleagram, ibm, masked_cochleagram, samplerate, figti
     rms = _decrease_time_resolution(masked_cochleagram, samplerate)
     ax3.imshow(rms, origin='lower', aspect='auto', vmin=0, interpolation="none")
     ax3.set_title("Masked cochleagram", fontsize=14)
-    ax3.set_xlabel("Time (s)", fontsize=14)
+    ax3.set_xlabel("Time frames", fontsize=14)
     ax3.set_ylabel("Frequency channels", fontsize=14)
 
     tight_layout()

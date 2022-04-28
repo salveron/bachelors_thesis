@@ -8,36 +8,36 @@ import numpy as np
 from brian2 import *
 
 from _feature_extraction import (compute_correlogram,
-                                 compute_twcf,
+                                 compute_tfcf,
                                  compute_cccf,
                                  compute_energy_values,
                                  compute_agreement_values)
 
 
-def form_time_segments(correlogram, twcf_threshold):
+def form_time_segments(correlogram, tfcf_threshold):
     """Form horizontal (across time axis) segments using the correlation between adjacent time windows.
 
-    The segments are formed by segregating together T-F units that have the correlation between adjacent time windows
-    higher than the given threshold. When the TWCF between the neighboring units is low, new segment is started.
+    The segments are formed by segregating together T-F units that have the correlation between adjacent time frames
+    higher than the given threshold. When the TFCF between the neighboring units is low, new segment is started.
 
     :param np.ndarray correlogram: Input correlogram
-    :param float twcf_threshold: Threshold for correlation between adjacent time windows
+    :param float tfcf_threshold: Threshold for correlation between adjacent time frames
     :returns: Binary matrix representing the formed segments
     :rtype: np.ndarray
 
     """
-    twcf = compute_twcf(correlogram)
+    tfcf = compute_tfcf(correlogram)
     segment_assignments = np.empty((correlogram.shape[0], correlogram.shape[1]))
 
     for _f in range(segment_assignments.shape[1]):
 
-        # Segment assignment that will be switched when the TWCF is lower than the threshold
+        # Segment assignment that will be switched when the TFCF is lower than the threshold
         current_segment = True
 
         for _t in range(segment_assignments.shape[0]):
 
             # Switch the assignment value when adjacent units don't correlate well enough
-            if twcf[_t, _f] < twcf_threshold:
+            if tfcf[_t, _f] < tfcf_threshold:
                 current_segment = not current_segment
 
             segment_assignments[_t, _f] = current_segment
@@ -103,7 +103,7 @@ def compute_ibm(windows, fundamental_lags, samplerate, energy_threshold, agreeme
                          (agreement_ratios > agreement_threshold))
 
     # FUTURE: try to somehow apply horizontal and vertical segmentation?
-    # time_segmentation = form_time_segments(correlogram, twcf_threshold)
+    # time_segmentation = form_time_segments(correlogram, tfcf_threshold)
     # frequency_segmentation = form_frequency_segments(correlogram, cccf_threshold)
 
     if return_components:
@@ -112,16 +112,16 @@ def compute_ibm(windows, fundamental_lags, samplerate, energy_threshold, agreeme
         return ibm
 
 
-def plot_segmentation(correlogram, twcf_threshold, cccf_threshold, figsize=(14, 5)):
+def plot_segmentation(correlogram, tfcf_threshold, cccf_threshold, figsize=(14, 5)):
     """Plot segmentation.
 
     :param np.ndarray correlogram: Input correlogram
-    :param float twcf_threshold: Threshold for correlation between adjacent time windows
+    :param float tfcf_threshold: Threshold for correlation between adjacent time frames
     :param float cccf_threshold: Threshold for cross-channel correlation
     :param tuple figsize: Size of the matplotlib figure
 
     """
-    time_segmentation = form_time_segments(correlogram, twcf_threshold)
+    time_segmentation = form_time_segments(correlogram, tfcf_threshold)
     frequency_segmentation = form_frequency_segments(correlogram, cccf_threshold)
 
     fig, (ax1, ax2) = subplots(ncols=2, figsize=figsize, sharey="row")

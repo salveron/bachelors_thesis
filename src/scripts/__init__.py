@@ -6,6 +6,7 @@
 from _sounds import (load_sound,
                      save_sound,
                      add_white_noise,
+                     add_other_background,
                      convert_to_binaural)
 
 from _peripheral_analysis import (compute_cochleagram,
@@ -13,7 +14,7 @@ from _peripheral_analysis import (compute_cochleagram,
 
 from _feature_extraction import (compute_correlogram,
                                  compute_sacf,
-                                 compute_twcf,
+                                 compute_tfcf,
                                  compute_cccf,
                                  find_dominant_lags,
                                  find_fundamental_frequencies,
@@ -123,14 +124,23 @@ def process(file_name, load_ibm_from=None,
     sound = load_sound(file_name)
     base_name, extension = file_name.split(".")
 
-    # Add white noise
+    # Add background: loaded sound, if 'bg_file_name' is present, or white noise otherwise
     if "noise_level" in kwargs.keys():
-        sound = add_white_noise(sound, kwargs["noise_level"])
+        if "bg_file_name" in kwargs.keys():
+            bg_sound = load_sound(pjoin("..", "data", "background_sounds", kwargs["bg_file_name"]), full_path=True)
+            sound = add_other_background(sound, bg_sound, kwargs["noise_level"])
+        else:
+            sound = add_white_noise(sound, kwargs["noise_level"])
 
     # Save the noised sound
     if save_noised:
         if noised_file_path is None:
-            noised_file_path = pjoin("..", "data", "output", base_name + " Noised." + extension)
+            suffix = (("_WN_"
+                       if "bg_file_name" not in kwargs.keys()
+                       else "_BG" + kwargs["bg_file_name"][9:11] + "_"
+                       ) + (",".join(str(kwargs["noise_level"]).split("."))))
+            noised_file_path = pjoin("..", "data", "output", base_name + suffix + "." + extension)
+
         save_sound(sound, file_path=noised_file_path)
 
     # Compute cochleagram
@@ -212,13 +222,20 @@ def process(file_name, load_ibm_from=None,
         print("done! ", end="")
 
         if resynth_file_path is None:
-            resynth_file_path = pjoin("..", "data", "output", base_name + " Resynth." + extension)
+            suffix = ""
+            if "noise_level" in kwargs.keys():
+                suffix = (("_WN_"
+                           if "bg_file_name" not in kwargs.keys()
+                           else "_BG" + kwargs["bg_file_name"][9:11] + "_"
+                           ) + (",".join(str(kwargs["noise_level"]).split("."))))
+            resynth_file_path = pjoin("..", "data", "output", base_name + suffix + "_resynth." + extension)
+
         save_sound(resynth, file_path=resynth_file_path)
 
     # Plot cochleagram, IBM and masked cochleagram
     if draw_plot:
         if plot_file_path is None:
-            plot_file_path = pjoin("..", "data", "output", base_name + " Plot.jpg")
+            plot_file_path = pjoin("..", "data", "output", base_name + "_plot.jpg")
 
         plot_process_results(cochleagram,
                              ibm,

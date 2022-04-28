@@ -23,7 +23,7 @@ def load_sound(file_name, full_path=False, monaural=True, print_stats=True):
 
     """
     if not full_path:
-        file_name = os.path.join("..", "data", "wav", file_name)
+        file_name = os.path.join("..", "data", "target_sounds_1", file_name)
 
     if not file_name.endswith(".wav"):
         raise ValueError("Only .wav files are supported.")
@@ -60,12 +60,27 @@ def add_white_noise(sound, noise_level):
     """Add white noise to the input sound.
 
     :param Sound sound: Input sound
-    :param float noise_level: Noise level
+    :param float noise_level: Noise level (amplitude of the white noise wave)
     :returns: Sound with noise
     :rtype: Sound
 
     """
     return sound + noise_level * Sound.whitenoise(sound.duration, sound.samplerate, sound.nchannels)
+
+
+def add_other_background(sound, bg_sound, noise_level):
+    """Add white noise to the input sound.
+
+    If the durations are not matching, the background sound is either cut, or repeated to fill the desired duration.
+
+    :param Sound sound: Input sound
+    :param Sound bg_sound: Background sound
+    :param float noise_level: Noise level (amplitude of the background sound wave)
+    :returns: Sound with noise
+    :rtype: Sound
+
+    """
+    return sound + noise_level * bg_sound.repeat(5).resized(sound.nsamples)
 
 
 def convert_to_binaural(sound):
