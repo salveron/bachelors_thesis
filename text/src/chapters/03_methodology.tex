@@ -141,7 +141,7 @@ Scene organization stage, as it was mentioned, serves to group the mid-level rep
 
 A notable outcome of the whole segmentation-and-grouping stage is a time-frequency mask of the input cochleagram (or any other chosen T-F representation). The main idea behind masking is to emphasize the T-F units corresponding to the target sound and attenuate those from the background. The mask might have either binary or real values from the $[0, 1]$ interval. If the former method is chosen, the task of searching the T-F mask might be interpreted as a binary classification problem. In case of the latter representation, the values from the mask might be interpreted differently: for example, as the signal-to-noise ratios (SNR) that show the ratios or differences between the target sound energy and overall energy in the T-F unit, or as probabilities that the T-F unit belongs to the target sound \cite{Wang2006}.\\
 
-As it was mentioned earlier, Wang and colleagues \cite{Wang2005} proposed ideal binary mask (IBM) to be the primary goal of CASA. The IBM is defined as follows \cite{Wang2006}\cite{Wang2012}:
+As it was mentioned earlier, Wang and colleagues \cite{Wang2005} proposed ideal binary mask (IBM) to be the primary output of a CASA system. The IBM is defined as follows \cite{Wang2006}\cite{Wang2012}:
 \begin{equation}
 	IBM(n, c) = 
 	\begin{cases}
