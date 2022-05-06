@@ -15,7 +15,7 @@
 \ctufitdepartment{Department of Applied Mathematics} % department of defence
 \ctufityear{2022} % year of defence
 \ctufitdeclarationplace{Prague} % place, where the declaration was signed
-\ctufitdeclarationdate{\today} % date of signature of the declaration
+\ctufitdeclarationdate{May 12, 2022} % date of signature of the declaration
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ABSTRACT AND KEYWORDS
@@ -83,7 +83,7 @@
 \begin{document} 
 	\frontmatter\frontmatterinit
 	
-	\includepdf{include/assignment.pdf} % TODO % assignment PDF file
+	\includepdf{include/assignment.pdf}
 	
 	\thispagestyle{empty}\cleardoublepage\maketitle
 	
@@ -108,8 +108,10 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% ACKNOWLEDGEMENT
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	\begin{acknowledgmentpage} % TODO
-		Chtěl bych poděkovat především sit amet, consectetuer adipiscing elit. Curabitur sagittis hendrerit ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Cras pede libero, dapibus nec, pretium sit amet, tempor quis. Sed vel lectus. Donec odio tempus molestie, porttitor ut, iaculis quis, sem. Suspendisse sagittis ultrices augue.
+	\begin{acknowledgmentpage}
+		I would like to express my sincerest gratitude to my supervisor Ing. Mgr. Ladislava Smítková Janků, Ph.D., as I am thankful for setting me on this new journey, guidance when the path was not clear, and encouragement in times of need. Without you, I probably would not have discovered the field of CASA at all.\\
+
+		I am also very grateful to my dear family, friends and colleagues for the never-ending support during my studies, encouragement to broaden the horizons and develop, and inspiration to be curious and creative. My love for music and science comes from my upbringing.
 	\end{acknowledgmentpage}
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -183,10 +185,9 @@
 	\include{chapters/05_experiments}
 	\include{chapters/06_conclusion}
 	
-	% \appendix\appendixinit
-	% \include{text/appendix}
+	\appendix\appendixinit
+	\include{chapters/medium}
 	
 	\backmatter
-	\printbibliography	
-	% \include{text/medium}	
+	\printbibliography
 \end{document}
