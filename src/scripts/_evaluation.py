@@ -219,10 +219,10 @@ def create_dataset(file_names, white_noise_samples=0, other_bg_samples=0, mask_s
 
     if save_to_file:
         if data_file_path is None:
-            data_file_path = pjoin("..", "data", f"cochleagrams_data.npy")
+            data_file_path = pjoin("..", "data", ("" if mask_samples else "un") + f"masked_data.npy")
         save_arr_to_file(data, data_file_path)
         if labels_file_path is None:
-            labels_file_path = pjoin("..", "data", f"cochleagrams_labels.npy")
+            labels_file_path = pjoin("..", "data", ("" if mask_samples else "un") + f"masked_labels.npy")
         save_arr_to_file(labels, labels_file_path)
 
     time_end = time.time()
@@ -241,9 +241,9 @@ def load_dataset(data_file_path=None, labels_file_path=None):
 
     """
     if data_file_path is None:
-        data_file_path = pjoin("..", "data", f"masked_data_1.npy")
+        data_file_path = pjoin("..", "data", f"masked_data.npy")
     if labels_file_path is None:
-        labels_file_path = pjoin("..", "data", f"masked_labels_1.npy")
+        labels_file_path = pjoin("..", "data", f"masked_labels.npy")
 
     data = load_arr_from_file(data_file_path, full_path=True)
     labels = load_arr_from_file(labels_file_path, full_path=True)

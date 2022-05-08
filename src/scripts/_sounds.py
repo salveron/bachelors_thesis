@@ -23,7 +23,7 @@ def load_sound(file_name, full_path=False, monaural=True, print_stats=True):
 
     """
     if not full_path:
-        file_name = os.path.join("..", "data", "target_sounds_1", file_name)
+        file_name = os.path.join("..", "data", "target_sounds", file_name)
 
     if not file_name.endswith(".wav"):
         raise ValueError("Only .wav files are supported.")
