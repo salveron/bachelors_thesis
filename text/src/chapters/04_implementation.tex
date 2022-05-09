@@ -38,7 +38,7 @@ After the cochleagram was computed, is was needed to split the output into windo
 
 \section{Correlogram and Other Features}
 
-For the feature extraction stage described in section \ref{subsection:casa_feature_extraction}, a correlogram was implemented using the autocorrelation function implemented in the \textit{statsmodels} package. The provided implementation could compute the ACF similarly as defined in equation \ref{equation:ACF}, however its another variant that uses Fast Fourier Transform was used for higher efficiency. The default number of lags for the autocorrelation function was chosen to be equal to the number of samples in the sampling window, i.\,e.~20\,ms times the samplerate of the input sound (48\,kHz).\\
+For the feature extraction stage described in section \ref{subsection:casa_feature_extraction}, a correlogram was implemented using the autocorrelation function implemented in the \textit{statsmodels} package. The provided implementation could compute the ACF similarly as defined in equation \ref{equation:ACF}, however its other variant which uses Fast Fourier Transform was used for higher efficiency. The default number of lags for the autocorrelation function was chosen to be equal to the number of samples in the sampling window, i.\,e.~20\,ms times the samplerate of the input sound (48\,kHz).\\
 
 Thus, the resulting correlogram was a three-dimensional array of floats in $[-1, 1]$ range. The first dimension was time frames, the second was frequency channels and the third was lags for the autocorrelation function.\\
 
