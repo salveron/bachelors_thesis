@@ -21,7 +21,6 @@
 └───text ....................... [LaTeX source codes and the generated PDF with text]
 │   │   main.pdf ............... [PDF-formatted text of the thesis]
 │   │   cover.pdf .............. [PDF-formatted front cover of the thesis]
-│   │   cover.pdf .............. [PDF-formatted front cover of the thesis]
 │   │
 │   └───src .................... [LaTeX source codes for the text]
 │       │   ctufit-thesis.cls .. [thesis template design file]
@@ -53,6 +52,6 @@ To install the dependencies to your virtual environment, run this:
 
 `pip install -r requirements.txt`
 
-If you want to run Jupyter notebooks, you need to install *Jupyter*. If you want to play sounds from notebooks (played by default), you need *Pygame* as well:
+If you want to run Jupyter notebooks, you need to install *Jupyter*. If you want to play sounds from notebooks (not played by default), you need *Pygame* as well:
 
 `pip install jupyter pygame`
