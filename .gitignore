@@ -20,3 +20,8 @@ _minted-ctufit-thesis/
 *.ps
 *.run.xml
 *.toc
+
+data/masked_data.npy
+data/masked_labels.npy
+data/unmasked_data.npy
+data/unmasked_labels.npy
